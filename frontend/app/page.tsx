@@ -21,38 +21,33 @@ import StarField from "./components/StarField";
 // ---------------------------------------------------------------------------
 // Placeholder data — replace with API fetch from Flask /api/scenarios/daily
 // ---------------------------------------------------------------------------
+const BACKEND = "https://localhost:5000";
+
 
 const PLACEHOLDER_CHARACTERS: Character[] = [
-  { id: "pilot",     name: "Pilot",     emoji: "🧑‍🚀" },
-  { id: "scientist", name: "Scientist", emoji: "👩‍🔬" },
-  { id: "elder",     name: "Elder",     emoji: "👴"  },
-  { id: "child",     name: "Child",     emoji: "🧒"  },
 ];
 
 const PLACEHOLDER_PLANETS: Planet[] = [
   {
-    id: "mars",
-    name: "Mars",
-    color: "#fb923c",
-    glowColor: "rgba(249,115,22,0.45)",
-    size: 86,
-    imageSrc: "/",
+    id: "proxima",
+    choice: "Proxima",
+    color: "#a3e635",
+    size: 180,
+    imageSrc: "/green_planet.svg",
   },
   {
     id: "kepler",
-    name: "Kepler-22b",
+    choice: "Kepler-22b",
     color: "#22d3ee",
-    glowColor: "rgba(103,232,249,0.38)",
-    size: 108,
-    imageSrc: "/assets/planets/kepler.png",
+    size: 200,
+    imageSrc: "/ring_planet.svg",
   },
   {
-    id: "proxima",
-    name: "Proxima",
-    color: "#a3e635",
-    glowColor: "rgba(163,230,53,0.32)",
-    size: 74,
-    imageSrc: "/assets/planets/proxima.png",
+    id: "mars",
+    choice: "Mars",
+    color: "#fb923c",
+    size: 200,
+    imageSrc: "/purple_planet.svg",
   },
 ];
 
@@ -191,8 +186,22 @@ export default function GamePage() {
   const dotColorFor = (charId: string): string | undefined =>
     PLACEHOLDER_PLANETS.find((p) => p.id === assignments[charId])?.color;
 
+  //Fix client server bugs - Claude
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  //Get characters and initialize
+  // const characters = fetch(BACKEND+"/alien");
+  // console.log(characters);
+
   // ---------------------------------------------------------------------------
   // Render
+  // radial-gradient(ellipse at 30% 20%, #1a1040 0%, #0a0618 60%, #000308 100%)
   // ---------------------------------------------------------------------------
   return (
     <DndContext
@@ -205,12 +214,13 @@ export default function GamePage() {
         className="min-h-screen flex flex-col relative overflow-hidden"
         style={{
           background:
-            "radial-gradient(ellipse at 30% 20%, #1a1040 0%, #0a0618 60%, #000308 100%)",
+            "#000308",
           fontFamily: "'Nunito', sans-serif",
         }}
       >
-        {/* Starfield background */}
+        {/* Starfield background*/}
         <StarField count={70} />
+        
 
         {/* ------------------------------------------------------------------ */}
         {/* Header                                                              */}
@@ -249,7 +259,7 @@ export default function GamePage() {
             {/* Planet 1 — top-left */}
             <div
               className="absolute"
-              style={{ left: "2%", top: "8%" }}
+              style={{ left: "-20%", top: "8%" }}
               onClick={() => handlePlanetTap(PLACEHOLDER_PLANETS[0].id)}
             >
               <PlanetZone
@@ -263,7 +273,7 @@ export default function GamePage() {
             {/* Planet 2 — centre, slightly lower */}
             <div
               className="absolute"
-              style={{ left: "50%", transform: "translateX(-50%)", top: "28%" }}
+              style={{ left: "50%", top: "25%" }}
               onClick={() => handlePlanetTap(PLACEHOLDER_PLANETS[1].id)}
             >
               <PlanetZone
@@ -277,7 +287,7 @@ export default function GamePage() {
             {/* Planet 3 — top-right */}
             <div
               className="absolute"
-              style={{ right: "2%", top: "4%" }}
+              style={{ left: "-5%", top: "90%" }}
               onClick={() => handlePlanetTap(PLACEHOLDER_PLANETS[2].id)}
             >
               <PlanetZone
