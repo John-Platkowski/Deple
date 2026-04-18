@@ -20,9 +20,57 @@ app = Flask(__name__)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-@app.route("/generate")
+@app.route("/generate_response", methods=["GET"])
 def generate():
-    response = client.models.generate_content(model="models/gemma-3n-e2b-it", contents="What is the temp in tokyo")
+    alien_id = request.args.get("id")
+    planet_ideology = request.args.get("planet")
+    scenario = request.args.get("scenario")
+
+    alien = collection.find_one({"_id": int(alien_id)})
+
+    if not alien:
+        return jsonify({"error": "Alien not found"}), 404
+
+    name = alien.get("name")
+    political = alien.get("political_ideology")
+    moral = alien.get("moral_ideology")
+
+    prompt = f"""
+You are an alien decision system.
+
+You MUST choose exactly ONE option from the list below.
+You are not allowed to create new answers.
+
+ALIEN PROFILE:
+- Name: {name}
+- Political ideology: {political}
+- Moral ideology: {moral}
+
+SITUATION:
+{scenario}
+
+PLANET OPTIONS (choose only one):
+1. StrongPolicing - strict rules and enforcement of behavior
+2. SocialSupport - community help and social integration
+3. WorkPlacement - structured jobs and responsibilities
+
+INSTRUCTIONS:
+- Choose EXACTLY ONE option number (1, 2, or 3)
+- Then give ONE short reason (max 10 words)
+- No extra text
+
+OUTPUT FORMAT:
+OptionNumber: Reason
+
+EXAMPLE:
+2: values cooperation and community support
+"""
+
+    response = client.models.generate_content(
+        model="models/gemma-3-1b-it",
+        contents=prompt
+    )
+
     return response.text
 
 @app.route("/model")

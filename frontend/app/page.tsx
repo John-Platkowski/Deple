@@ -36,7 +36,7 @@ const PLACEHOLDER_PLANETS: Planet[] = [
     color: "#fb923c",
     glowColor: "rgba(249,115,22,0.45)",
     size: 86,
-    // imageSrc: "/assets/planets/mars.png",  ← uncomment when art is ready
+    imageSrc: "/",
   },
   {
     id: "kepler",
@@ -44,7 +44,7 @@ const PLACEHOLDER_PLANETS: Planet[] = [
     color: "#22d3ee",
     glowColor: "rgba(103,232,249,0.38)",
     size: 108,
-    // imageSrc: "/assets/planets/kepler.png",
+    imageSrc: "/assets/planets/kepler.png",
   },
   {
     id: "proxima",
@@ -52,14 +52,14 @@ const PLACEHOLDER_PLANETS: Planet[] = [
     color: "#a3e635",
     glowColor: "rgba(163,230,53,0.32)",
     size: 74,
-    // imageSrc: "/assets/planets/proxima.png",
+    imageSrc: "/assets/planets/proxima.png",
   },
 ];
 
 const SCENARIO_PROMPT =
-  "A solar flare is coming. Your crew must board escape pods to three destinations — but only one is truly safe. Choose wisely.";
+  "Which world would our Deples choose. How can Deples help an overly aggressive Deple?";
 
-const TIMER_SECONDS = 60;
+const TIMER_SECONDS = 2000;
 
 // ---------------------------------------------------------------------------
 // Assignment map: characterId → planetId
@@ -215,29 +215,13 @@ export default function GamePage() {
         {/* ------------------------------------------------------------------ */}
         {/* Header                                                              */}
         {/* ------------------------------------------------------------------ */}
-        <header className="relative z-10 flex justify-between items-center px-5 pt-6 pb-2">
+        <header className="relative z-10 flex justify-center items-center px-5 pt-6 pb-2">
           <span
             className="text-violet-300 text-xs uppercase tracking-widest"
             style={{ fontFamily: "'Fredoka One', sans-serif" }}
           >
-            Scenario #1
+            The Scenario
           </span>
-
-          {/* Timer pill — turns red in last 10 seconds */}
-          <motion.span
-            animate={{ color: timeLeft <= 10 ? "#f87171" : "#7c3aed" }}
-            className="text-sm px-3 py-1 rounded-full border"
-            style={{
-              background: timeLeft <= 10
-                ? "rgba(248,113,113,0.12)"
-                : "rgba(124,58,237,0.15)",
-              borderColor: timeLeft <= 10
-                ? "rgba(248,113,113,0.35)"
-                : "rgba(124,58,237,0.3)",
-            }}
-          >
-            {formattedTime}
-          </motion.span>
         </header>
 
         {/* ------------------------------------------------------------------ */}
@@ -306,7 +290,25 @@ export default function GamePage() {
 
           </div>
         </section>
-
+        {/* Centered timer pill */}
+        <div className="relative z-10 flex justify-center py-2">
+          <motion.span
+            animate={{ color: timeLeft <= 10 ? "#f87171" : "#7c3aed" }}
+            className="text-sm px-5 py-1.5 rounded-full border"
+            style={{
+              background: timeLeft <= 10
+                ? "rgba(248,113,113,0.12)"
+                : "rgba(124,58,237,0.15)",
+              borderColor: timeLeft <= 10
+                ? "rgba(248,113,113,0.35)"
+                : "rgba(124,58,237,0.3)",
+              fontFamily: "'Fredoka One', sans-serif",
+              letterSpacing: "0.1em",
+            }}
+          >
+            {formattedTime}
+          </motion.span>
+        </div>
         {/* ------------------------------------------------------------------ */}
         {/* Taskbar — character selection + confirm button                      */}
         {/* ------------------------------------------------------------------ */}
@@ -321,7 +323,7 @@ export default function GamePage() {
           <p className="text-center text-[10px] text-gray-500 uppercase tracking-widest mb-3">
             {selectedCharId
               ? "Now tap a planet to assign"
-              : "Tap or drag crew to a destination"}
+              : "Tap or drag Alien to a destination"}
           </p>
 
           {/* Character cards */}
@@ -361,7 +363,7 @@ export default function GamePage() {
           </AnimatePresence>
 
           {/* Progress dots */}
-          <div className="flex justify-center gap-1.5 mt-3">
+          {/*<div className="flex justify-center gap-1.5 mt-3">
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
@@ -371,7 +373,7 @@ export default function GamePage() {
                 }}
               />
             ))}
-          </div>
+          </div> */}
         </footer>
       </main>
     </DndContext>
