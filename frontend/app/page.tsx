@@ -21,11 +21,7 @@ import StarField from "./components/StarField";
 // ---------------------------------------------------------------------------
 // Placeholder data — replace with API fetch from Flask /api/scenarios/daily
 // ---------------------------------------------------------------------------
-const BACKEND = "https://localhost:5000";
-
-
-const PLACEHOLDER_CHARACTERS: Character[] = [
-];
+const BACKEND = "http://localhost:5000";
 
 const PLACEHOLDER_PLANETS: Planet[] = [
   {
@@ -81,6 +77,23 @@ export default function GamePage() {
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor,   { activationConstraint: { delay: 100, tolerance: 8 } })
   );
+
+  //Characters list, to be updated
+  const [characters, setCharacters] = useState<Character[]>([]);
+
+  useEffect(() => {
+    fetch(`${BACKEND}/aliens`)
+      .then((res) => res.json())
+      .then((data) => {
+        const chars = Object.entries(data).map(([id, alien]: [string, any]) => ({
+          id,
+          name: alien.name,
+          imageSrc: `${alien.image}.svg`,
+          imageSrc2: `${alien.image}_face.svg`,
+        }));
+        setCharacters(chars);
+      });
+  }, []);
 
   // ---------------------------------------------------------------------------
   // Timer
@@ -155,7 +168,7 @@ export default function GamePage() {
   // ---------------------------------------------------------------------------
   // Submission
   // ---------------------------------------------------------------------------
-  const allPlaced = PLACEHOLDER_CHARACTERS.every((c) => assignments[c.id]);
+  const allPlaced = characters.every((c) => assignments[c.id]);
 
   const handleConfirm = async () => {
     try {
@@ -180,7 +193,7 @@ export default function GamePage() {
   // Derive which characters have landed on each planet
   // ---------------------------------------------------------------------------
   const landedOn = (planetId: string): Character[] =>
-    PLACEHOLDER_CHARACTERS.filter((c) => assignments[c.id] === planetId);
+    characters.filter((c) => assignments[c.id] === planetId);
 
   // Planet colour for the dot indicator under each character card
   const dotColorFor = (charId: string): string | undefined =>
@@ -194,10 +207,6 @@ export default function GamePage() {
   }, []);
 
   if (!mounted) return null;
-
-  //Get characters and initialize
-  // const characters = fetch(BACKEND+"/alien");
-  // console.log(characters);
 
   // ---------------------------------------------------------------------------
   // Render
@@ -338,7 +347,7 @@ export default function GamePage() {
 
           {/* Character cards */}
           <div className="flex justify-around items-end">
-            {PLACEHOLDER_CHARACTERS.map((char) => (
+            {characters.map((char) => (
               <CharacterCard
                 key={char.id}
                 character={char}
@@ -371,19 +380,6 @@ export default function GamePage() {
               </motion.button>
             )}
           </AnimatePresence>
-
-          {/* Progress dots */}
-          {/*<div className="flex justify-center gap-1.5 mt-3">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="w-1.5 h-1.5 rounded-full transition-colors duration-300"
-                style={{
-                  background: i === 0 ? "#a78bfa" : "rgba(255,255,255,0.15)",
-                }}
-              />
-            ))}
-          </div> */}
         </footer>
       </main>
     </DndContext>

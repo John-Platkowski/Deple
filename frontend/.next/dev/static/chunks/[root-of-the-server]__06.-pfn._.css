@@ -153,8 +153,6 @@
     --text-xs--line-height: calc(1 / .75);
     --text-sm: .875rem;
     --text-sm--line-height: calc(1.25 / .875);
-    --text-3xl: 1.875rem;
-    --text-3xl--line-height: calc(2.25 / 1.875);
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
     --tracking-wider: .05em;
@@ -474,10 +472,6 @@
     margin-top: calc(var(--spacing) * 1);
   }
 
-  .mt-3 {
-    margin-top: calc(var(--spacing) * 3);
-  }
-
   .mt-4 {
     margin-top: calc(var(--spacing) * 4);
   }
@@ -581,10 +575,6 @@
     gap: calc(var(--spacing) * 1);
   }
 
-  .gap-1\.5 {
-    gap: calc(var(--spacing) * 1.5);
-  }
-
   .overflow-hidden {
     overflow: hidden;
   }
@@ -676,8 +666,16 @@
     }
   }
 
+  .object-contain {
+    object-fit: contain;
+  }
+
   .object-cover {
     object-fit: cover;
+  }
+
+  .p-1 {
+    padding: calc(var(--spacing) * 1);
   }
 
   .px-4 {
@@ -734,11 +732,6 @@
 
   .font-\[\'Nunito\'\] {
     font-family: Nunito;
-  }
-
-  .text-3xl {
-    font-size: var(--text-3xl);
-    line-height: var(--tw-leading, var(--text-3xl--line-height));
   }
 
   .text-sm {

@@ -9,9 +9,11 @@ __turbopack_context__.s([
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$dnd$2d$kit$2f$core$2f$dist$2f$core$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@dnd-kit/core/dist/core.esm.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/framer-motion/dist/es/render/components/motion/proxy.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/image.js [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
 ;
 ;
 function CharacterCard({ character, isPlaced, isSelected, assignedPlanetColor, onTap }) {
@@ -47,22 +49,26 @@ function CharacterCard({ character, isPlaced, isSelected, assignedPlanetColor, o
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: `
-          w-14 h-14 rounded-full flex items-center justify-center text-3xl
-          transition-all duration-200 cursor-grab active:cursor-grabbing
-          ${isDragging ? "scale-125 shadow-[0_0_24px_rgba(167,139,250,0.7)]" : ""}
-          ${isSelected ? "bg-violet-500/20 border-2 border-violet-400 shadow-[0_0_16px_rgba(167,139,250,0.45)]" : isPlaced ? "bg-white/[0.03] border border-dashed border-white/10 opacity-35" : "bg-white/[0.06] border border-white/15"}
-        `,
-                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                    children: character.emoji
+        relative w-14 h-14 rounded-full flex items-center justify-center
+        overflow-hidden transition-all duration-200 cursor-grab active:cursor-grabbing
+        ${isDragging ? "scale-125 shadow-[0_0_24px_rgba(167,139,250,0.7)]" : ""}
+        ${isSelected ? "bg-violet-500/20 border-2 border-violet-400 shadow-[0_0_16px_rgba(167,139,250,0.45)]" : isPlaced ? "bg-white/[0.03] border border-dashed border-white/10 opacity-35" : "bg-white/[0.06] border border-white/15"}
+      `,
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                    src: character.imageSrc2,
+                    alt: character.name,
+                    fill: true,
+                    className: "object-contain p-1",
+                    priority: true
                 }, void 0, false, {
                     fileName: "[project]/app/components/CharacterCard.tsx",
-                    lineNumber: 73,
-                    columnNumber: 9
+                    lineNumber: 69,
+                    columnNumber: 5
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/components/CharacterCard.tsx",
-                lineNumber: 54,
-                columnNumber: 7
+                lineNumber: 55,
+                columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                 className: `text-[9px] font-bold uppercase tracking-widest font-['Nunito']
@@ -71,7 +77,7 @@ function CharacterCard({ character, isPlaced, isSelected, assignedPlanetColor, o
                 children: character.name
             }, void 0, false, {
                 fileName: "[project]/app/components/CharacterCard.tsx",
-                lineNumber: 77,
+                lineNumber: 78,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -81,13 +87,13 @@ function CharacterCard({ character, isPlaced, isSelected, assignedPlanetColor, o
                 }
             }, void 0, false, {
                 fileName: "[project]/app/components/CharacterCard.tsx",
-                lineNumber: 86,
+                lineNumber: 87,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/components/CharacterCard.tsx",
-        lineNumber: 38,
+        lineNumber: 39,
         columnNumber: 5
     }, this);
 }
@@ -209,7 +215,7 @@ function PlanetZone({ planet, landedCharacters, isActive, floatDelay = 0 }) {
                                 },
                                 className: "text-sm drop-shadow-md",
                                 title: char.name,
-                                children: char.emoji
+                                children: char.imageSrc2
                             }, char.id, false, {
                                 fileName: "[project]/app/components/PlanetZone.tsx",
                                 lineNumber: 82,
@@ -370,8 +376,7 @@ var _s = __turbopack_context__.k.signature();
 // ---------------------------------------------------------------------------
 // Placeholder data — replace with API fetch from Flask /api/scenarios/daily
 // ---------------------------------------------------------------------------
-const BACKEND = "https://localhost:5000";
-const PLACEHOLDER_CHARACTERS = [];
+const BACKEND = "http://localhost:5000";
 const PLACEHOLDER_PLANETS = [
     {
         id: "proxima",
@@ -419,6 +424,27 @@ function GamePage() {
             tolerance: 8
         }
     }));
+    //Characters list, to be updated
+    const [characters, setCharacters] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "GamePage.useEffect": ()=>{
+            fetch(`${BACKEND}/aliens`).then({
+                "GamePage.useEffect": (res)=>res.json()
+            }["GamePage.useEffect"]).then({
+                "GamePage.useEffect": (data)=>{
+                    const chars = Object.entries(data).map({
+                        "GamePage.useEffect.chars": ([id, alien])=>({
+                                id,
+                                name: alien.name,
+                                imageSrc: `${alien.image}.svg`,
+                                imageSrc2: `${alien.image}_face.svg`
+                            })
+                    }["GamePage.useEffect.chars"]);
+                    setCharacters(chars);
+                }
+            }["GamePage.useEffect"]);
+        }
+    }["GamePage.useEffect"], []);
     // ---------------------------------------------------------------------------
     // Timer
     // ---------------------------------------------------------------------------
@@ -512,7 +538,7 @@ function GamePage() {
     // ---------------------------------------------------------------------------
     // Submission
     // ---------------------------------------------------------------------------
-    const allPlaced = PLACEHOLDER_CHARACTERS.every((c)=>assignments[c.id]);
+    const allPlaced = characters.every((c)=>assignments[c.id]);
     const handleConfirm = async ()=>{
         try {
             // TODO: replace with your real scenario ID from the fetched scenario
@@ -537,7 +563,7 @@ function GamePage() {
     // ---------------------------------------------------------------------------
     // Derive which characters have landed on each planet
     // ---------------------------------------------------------------------------
-    const landedOn = (planetId)=>PLACEHOLDER_CHARACTERS.filter((c)=>assignments[c.id] === planetId);
+    const landedOn = (planetId)=>characters.filter((c)=>assignments[c.id] === planetId);
     // Planet colour for the dot indicator under each character card
     const dotColorFor = (charId)=>PLACEHOLDER_PLANETS.find((p)=>p.id === assignments[charId])?.color;
     //Fix client server bugs - Claude
@@ -548,9 +574,6 @@ function GamePage() {
         }
     }["GamePage.useEffect"], []);
     if (!mounted) return null;
-    //Get characters and initialize
-    // const characters = fetch(BACKEND+"/alien");
-    // console.log(characters);
     // ---------------------------------------------------------------------------
     // Render
     // radial-gradient(ellipse at 30% 20%, #1a1040 0%, #0a0618 60%, #000308 100%)
@@ -571,7 +594,7 @@ function GamePage() {
                     count: 70
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 222,
+                    lineNumber: 231,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
@@ -584,12 +607,12 @@ function GamePage() {
                         children: "The Scenario"
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 229,
+                        lineNumber: 238,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 228,
+                    lineNumber: 237,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -599,12 +622,12 @@ function GamePage() {
                         children: SCENARIO_PROMPT
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 241,
+                        lineNumber: 250,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 240,
+                    lineNumber: 249,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -627,12 +650,12 @@ function GamePage() {
                                     floatDelay: 0
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 265,
+                                    lineNumber: 274,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 260,
+                                lineNumber: 269,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -649,12 +672,12 @@ function GamePage() {
                                     floatDelay: 1.3
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 279,
+                                    lineNumber: 288,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 274,
+                                lineNumber: 283,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -671,23 +694,23 @@ function GamePage() {
                                     floatDelay: 2.1
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 293,
+                                    lineNumber: 302,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 288,
+                                lineNumber: 297,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 257,
+                        lineNumber: 266,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 249,
+                    lineNumber: 258,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -706,12 +729,12 @@ function GamePage() {
                         children: formattedTime
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 305,
+                        lineNumber: 314,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 304,
+                    lineNumber: 313,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -727,12 +750,12 @@ function GamePage() {
                             children: selectedCharId ? "Now tap a planet to assign" : "Tap or drag Alien to a destination"
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 333,
+                            lineNumber: 342,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex justify-around items-end",
-                            children: PLACEHOLDER_CHARACTERS.map((char)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$components$2f$CharacterCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                            children: characters.map((char)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$components$2f$CharacterCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                     character: char,
                                     isPlaced: Boolean(assignments[char.id]),
                                     isSelected: selectedCharId === char.id,
@@ -740,12 +763,12 @@ function GamePage() {
                                     onTap: handleCharTap
                                 }, char.id, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 342,
+                                    lineNumber: 351,
                                     columnNumber: 15
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 340,
+                            lineNumber: 349,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AnimatePresence"], {
@@ -777,33 +800,33 @@ function GamePage() {
                                 children: "Confirm Crew"
                             }, "confirm", false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 356,
+                                lineNumber: 365,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 354,
+                            lineNumber: 363,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 325,
+                    lineNumber: 334,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/page.tsx",
-            lineNumber: 213,
+            lineNumber: 222,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/page.tsx",
-        lineNumber: 207,
+        lineNumber: 216,
         columnNumber: 5
     }, this);
 }
-_s(GamePage, "LyljeTZ2CwixvFqm2E3Zr/2AFfU=", false, function() {
+_s(GamePage, "p/REuQCL7cnhYD1UkvTyEqc1t+A=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$dnd$2d$kit$2f$core$2f$dist$2f$core$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSensors"]

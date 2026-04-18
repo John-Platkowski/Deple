@@ -2,13 +2,14 @@
 
 import { useDraggable } from "@dnd-kit/core";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export interface Character {
   id: string;
   name: string;
-  emoji: string;
   // Swap emoji for image src once art assets are ready:
-  // imageSrc?: string;
+  imageSrc: string;
+  imageSrc2: string;
 }
 
 interface CharacterCardProps {
@@ -50,29 +51,29 @@ export default function CharacterCard({
       className="flex flex-col items-center gap-1 select-none touch-none"
       aria-label={`${character.name} character card`}
     >
-      {/* Avatar bubble */}
-      <div
-        className={`
-          w-14 h-14 rounded-full flex items-center justify-center text-3xl
-          transition-all duration-200 cursor-grab active:cursor-grabbing
-          ${
-            isDragging
-              ? "scale-125 shadow-[0_0_24px_rgba(167,139,250,0.7)]"
-              : ""
-          }
-          ${
-            isSelected
-              ? "bg-violet-500/20 border-2 border-violet-400 shadow-[0_0_16px_rgba(167,139,250,0.45)]"
-              : isPlaced
-              ? "bg-white/[0.03] border border-dashed border-white/10 opacity-35"
-              : "bg-white/[0.06] border border-white/15"
-          }
-        `}
-      >
-        {/* Replace with <Image> once art assets are available */}
-        <span>{character.emoji}</span>
-      </div>
-
+    {/* Avatar bubble */}
+    <div
+      className={`
+        relative w-14 h-14 rounded-full flex items-center justify-center
+        overflow-hidden transition-all duration-200 cursor-grab active:cursor-grabbing
+        ${isDragging ? "scale-125 shadow-[0_0_24px_rgba(167,139,250,0.7)]" : ""}
+        ${
+          isSelected
+            ? "bg-violet-500/20 border-2 border-violet-400 shadow-[0_0_16px_rgba(167,139,250,0.45)]"
+            : isPlaced
+            ? "bg-white/[0.03] border border-dashed border-white/10 opacity-35"
+            : "bg-white/[0.06] border border-white/15"
+        }
+      `}
+    >
+    <Image
+      src={character.imageSrc2}
+      alt={character.name}
+      fill
+      className="object-contain p-1"
+      priority
+    />
+    </div>
       {/* Character name */}
       <span
         className={`text-[9px] font-bold uppercase tracking-widest font-['Nunito']

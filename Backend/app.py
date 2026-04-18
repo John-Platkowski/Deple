@@ -3,11 +3,15 @@ from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import os
 from google import genai
+from flask_cors import CORS
+
 
 load_dotenv()
 
 #set up flask  with name as app
 app = Flask(__name__)
+
+CORS(app, origins=[os.getenv("FRONT_END")])
 
 #get infromation from mongoDB client
 client = MongoClient(os.getenv("MONGO_DB"))
@@ -15,8 +19,6 @@ db = client["db"]
 aliens = db["Aliens"]
 scenarios = db["Scenarios"]
 planets = db["Planets"]
-
-app = Flask(__name__)
 
 # The client gets the API key from the environment variable `GEMINI_API_KEY`.
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -118,17 +120,17 @@ def table():
     return html
 
 #This will return infromation in a json format
-@app.route("/aliens", method = ['POST'])
-def aliens():
-    aliens = aliens.find({})
+@app.route("/aliens", methods = ['GET'])
+def find_aliens():
+    cursor = aliens.find({})
 
     result = {}
 
-    for alien in aliens:
+    for alien in cursor:
         result[str(alien["_id"])] = {
             "name": alien.get("name"),
             "traits": alien.get("traits"),
-            "image": alien.get("images")
+            "image": alien.get("image")
         }
 
     return jsonify(result)
