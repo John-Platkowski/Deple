@@ -163,81 +163,67 @@ function PlanetZone({ planet, landedCharacters, isActive, floatDelay = 0 }) {
                         className: "absolute inset-0 rounded-full border-2 border-dashed border-white/40"
                     }, void 0, false, {
                         fileName: "[project]/app/components/PlanetZone.tsx",
-                        lineNumber: 57,
+                        lineNumber: 56,
                         columnNumber: 11
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "relative rounded-full overflow-hidden",
-                        style: {
-                            width: planet.size,
-                            height: planet.size,
-                            boxShadow: `0 0 ${planet.size * 0.4}px ${planet.glowColor}`
-                        },
-                        children: [
-                            planet.imageSrc ? // Real art asset — drop PNGs in /Assets and pass the path as imageSrc
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                src: planet.imageSrc,
-                                alt: planet.name,
-                                fill: true,
-                                className: "object-cover",
-                                priority: true
-                            }, void 0, false, {
-                                fileName: "[project]/app/components/PlanetZone.tsx",
-                                lineNumber: 75,
-                                columnNumber: 13
-                            }, this) : // CSS fallback sphere until art is ready
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "w-full h-full",
-                                style: {
-                                    background: buildGradient(planet.color)
-                                }
-                            }, void 0, false, {
-                                fileName: "[project]/app/components/PlanetZone.tsx",
-                                lineNumber: 84,
-                                columnNumber: 13
-                            }, this),
-                            landedCharacters.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "absolute bottom-2 left-0 right-0 flex justify-center gap-0.5",
-                                children: landedCharacters.map((char, i)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
-                                        initial: {
-                                            y: 20,
-                                            opacity: 0,
-                                            scale: 0.5
-                                        },
-                                        animate: {
-                                            y: 0,
-                                            opacity: 1,
-                                            scale: 1
-                                        },
-                                        transition: {
-                                            type: "spring",
-                                            stiffness: 300,
-                                            damping: 18,
-                                            delay: i * 0.08
-                                        },
-                                        className: "text-sm drop-shadow-md",
-                                        title: char.name,
-                                        children: char.emoji
-                                    }, char.id, false, {
-                                        fileName: "[project]/app/components/PlanetZone.tsx",
-                                        lineNumber: 91,
-                                        columnNumber: 17
-                                    }, this))
-                            }, void 0, false, {
-                                fileName: "[project]/app/components/PlanetZone.tsx",
-                                lineNumber: 89,
-                                columnNumber: 13
-                            }, this)
-                        ]
-                    }, void 0, true, {
+                    planet.imageSrc ? // Real art asset — drop PNGs in /Assets and pass the path as imageSrc
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                        src: planet.imageSrc,
+                        alt: planet.choice,
+                        fill: true,
+                        className: "object-cover",
+                        priority: true
+                    }, void 0, false, {
                         fileName: "[project]/app/components/PlanetZone.tsx",
-                        lineNumber: 65,
-                        columnNumber: 9
+                        lineNumber: 66,
+                        columnNumber: 11
+                    }, this) : // CSS fallback sphere until art is ready
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "w-full h-full",
+                        style: {
+                            background: buildGradient(planet.color)
+                        }
+                    }, void 0, false, {
+                        fileName: "[project]/app/components/PlanetZone.tsx",
+                        lineNumber: 75,
+                        columnNumber: 11
+                    }, this),
+                    landedCharacters.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "absolute bottom-2 left-0 right-0 flex justify-center gap-0.5",
+                        children: landedCharacters.map((char, i)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                initial: {
+                                    y: 20,
+                                    opacity: 0,
+                                    scale: 0.5
+                                },
+                                animate: {
+                                    y: 0,
+                                    opacity: 1,
+                                    scale: 1
+                                },
+                                transition: {
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 18,
+                                    delay: i * 0.08
+                                },
+                                className: "text-sm drop-shadow-md",
+                                title: char.name,
+                                children: char.emoji
+                            }, char.id, false, {
+                                fileName: "[project]/app/components/PlanetZone.tsx",
+                                lineNumber: 82,
+                                columnNumber: 15
+                            }, this))
+                    }, void 0, false, {
+                        fileName: "[project]/app/components/PlanetZone.tsx",
+                        lineNumber: 80,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/components/PlanetZone.tsx",
-                lineNumber: 47,
+                lineNumber: 46,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -245,16 +231,16 @@ function PlanetZone({ planet, landedCharacters, isActive, floatDelay = 0 }) {
                 style: {
                     color: planet.color
                 },
-                children: planet.name
+                children: planet.choice
             }, void 0, false, {
                 fileName: "[project]/app/components/PlanetZone.tsx",
-                lineNumber: 118,
+                lineNumber: 108,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/components/PlanetZone.tsx",
-        lineNumber: 35,
+        lineNumber: 34,
         columnNumber: 5
     }, this);
 }
@@ -316,22 +302,22 @@ var _s = __turbopack_context__.k.signature();
 // ---------------------------------------------------------------------------
 const PLACEHOLDER_CHARACTERS = [
     {
-        id: "pilot",
-        name: "Pilot",
+        id: "1",
+        name: "",
         emoji: "🧑‍🚀"
     },
     {
-        id: "scientist",
+        id: "2",
         name: "Scientist",
         emoji: "👩‍🔬"
     },
     {
-        id: "elder",
+        id: "3",
         name: "Elder",
         emoji: "👴"
     },
     {
-        id: "child",
+        id: "4",
         name: "Child",
         emoji: "🧒"
     }
@@ -339,28 +325,28 @@ const PLACEHOLDER_CHARACTERS = [
 const PLACEHOLDER_PLANETS = [
     {
         id: "mars",
-        name: "Mars",
+        choice: "Mars",
         color: "#fb923c",
-        glowColor: "rgba(249,115,22,0.45)",
-        size: 86
+        size: 108,
+        imageSrc: "/purple_planet.svg"
     },
     {
         id: "kepler",
-        name: "Kepler-22b",
+        choice: "Kepler-22b",
         color: "#22d3ee",
-        glowColor: "rgba(103,232,249,0.38)",
-        size: 108
+        size: 108,
+        imageSrc: "/red_planet.svg"
     },
     {
         id: "proxima",
-        name: "Proxima",
+        choice: "Proxima",
         color: "#a3e635",
-        glowColor: "rgba(163,230,53,0.32)",
-        size: 74
+        size: 108,
+        imageSrc: "/ring_planet.svg"
     }
 ];
-const SCENARIO_PROMPT = "A solar flare is coming. Your crew must board escape pods to three destinations — but only one is truly safe. Choose wisely.";
-const TIMER_SECONDS = 60;
+const SCENARIO_PROMPT = "Which world would our Deples choose. How can Deples help an overly aggressive Deple?";
+const TIMER_SECONDS = 2000;
 function GamePage() {
     _s();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
@@ -504,8 +490,17 @@ function GamePage() {
     const landedOn = (planetId)=>PLACEHOLDER_CHARACTERS.filter((c)=>assignments[c.id] === planetId);
     // Planet colour for the dot indicator under each character card
     const dotColorFor = (charId)=>PLACEHOLDER_PLANETS.find((p)=>p.id === assignments[charId])?.color;
+    //Fix client server bugs - Claude
+    const [mounted, setMounted] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "GamePage.useEffect": ()=>{
+            setMounted(true);
+        }
+    }["GamePage.useEffect"], []);
+    if (!mounted) return null;
     // ---------------------------------------------------------------------------
     // Render
+    // radial-gradient(ellipse at 30% 20%, #1a1040 0%, #0a0618 60%, #000308 100%)
     // ---------------------------------------------------------------------------
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$dnd$2d$kit$2f$core$2f$dist$2f$core$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DndContext"], {
         sensors: sensors,
@@ -515,43 +510,26 @@ function GamePage() {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
             className: "min-h-screen flex flex-col relative overflow-hidden",
             style: {
-                background: "radial-gradient(ellipse at 30% 20%, #1a1040 0%, #0a0618 60%, #000308 100%)",
+                background: "#000308",
                 fontFamily: "'Nunito', sans-serif"
             },
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
-                    className: "relative z-10 flex justify-between items-center px-5 pt-6 pb-2",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                            className: "text-violet-300 text-xs uppercase tracking-widest",
-                            style: {
-                                fontFamily: "'Fredoka One', sans-serif"
-                            },
-                            children: "Scenario #1"
-                        }, void 0, false, {
-                            fileName: "[project]/app/page.tsx",
-                            lineNumber: 219,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
-                            animate: {
-                                color: timeLeft <= 10 ? "#f87171" : "#7c3aed"
-                            },
-                            className: "text-sm px-3 py-1 rounded-full border",
-                            style: {
-                                background: timeLeft <= 10 ? "rgba(248,113,113,0.12)" : "rgba(124,58,237,0.15)",
-                                borderColor: timeLeft <= 10 ? "rgba(248,113,113,0.35)" : "rgba(124,58,237,0.3)"
-                            },
-                            children: formattedTime
-                        }, void 0, false, {
-                            fileName: "[project]/app/page.tsx",
-                            lineNumber: 227,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
+                    className: "relative z-10 flex justify-center items-center px-5 pt-6 pb-2",
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "text-violet-300 text-xs uppercase tracking-widest",
+                        style: {
+                            fontFamily: "'Fredoka One', sans-serif"
+                        },
+                        children: "The Scenario"
+                    }, void 0, false, {
+                        fileName: "[project]/app/page.tsx",
+                        lineNumber: 225,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 218,
+                    lineNumber: 224,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -561,12 +539,12 @@ function GamePage() {
                         children: SCENARIO_PROMPT
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 247,
+                        lineNumber: 237,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 246,
+                    lineNumber: 236,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -589,12 +567,12 @@ function GamePage() {
                                     floatDelay: 0
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 271,
+                                    lineNumber: 261,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 266,
+                                lineNumber: 256,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -602,7 +580,7 @@ function GamePage() {
                                 style: {
                                     left: "50%",
                                     transform: "translateX(-50%)",
-                                    top: "28%"
+                                    top: "48%"
                                 },
                                 onClick: ()=>handlePlanetTap(PLACEHOLDER_PLANETS[1].id),
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$components$2f$PlanetZone$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -612,19 +590,19 @@ function GamePage() {
                                     floatDelay: 1.3
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 285,
+                                    lineNumber: 275,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 280,
+                                lineNumber: 270,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "absolute",
                                 style: {
                                     right: "2%",
-                                    top: "4%"
+                                    top: "6%"
                                 },
                                 onClick: ()=>handlePlanetTap(PLACEHOLDER_PLANETS[2].id),
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$components$2f$PlanetZone$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -634,23 +612,47 @@ function GamePage() {
                                     floatDelay: 2.1
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 299,
+                                    lineNumber: 289,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 294,
+                                lineNumber: 284,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 263,
+                        lineNumber: 253,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 255,
+                    lineNumber: 245,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "relative z-10 flex justify-center py-2",
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
+                        animate: {
+                            color: timeLeft <= 10 ? "#f87171" : "#7c3aed"
+                        },
+                        className: "text-sm px-5 py-1.5 rounded-full border",
+                        style: {
+                            background: timeLeft <= 10 ? "rgba(248,113,113,0.12)" : "rgba(124,58,237,0.15)",
+                            borderColor: timeLeft <= 10 ? "rgba(248,113,113,0.35)" : "rgba(124,58,237,0.3)",
+                            fontFamily: "'Fredoka One', sans-serif",
+                            letterSpacing: "0.1em"
+                        },
+                        children: formattedTime
+                    }, void 0, false, {
+                        fileName: "[project]/app/page.tsx",
+                        lineNumber: 301,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
+                    fileName: "[project]/app/page.tsx",
+                    lineNumber: 300,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -663,10 +665,10 @@ function GamePage() {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                             className: "text-center text-[10px] text-gray-500 uppercase tracking-widest mb-3",
-                            children: selectedCharId ? "Now tap a planet to assign" : "Tap or drag crew to a destination"
+                            children: selectedCharId ? "Now tap a planet to assign" : "Tap or drag Alien to a destination"
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 321,
+                            lineNumber: 329,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -679,12 +681,12 @@ function GamePage() {
                                     onTap: handleCharTap
                                 }, char.id, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 330,
+                                    lineNumber: 338,
                                     columnNumber: 15
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 328,
+                            lineNumber: 336,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AnimatePresence"], {
@@ -716,54 +718,33 @@ function GamePage() {
                                 children: "Confirm Crew"
                             }, "confirm", false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 344,
+                                lineNumber: 352,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 342,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex justify-center gap-1.5 mt-3",
-                            children: [
-                                0,
-                                1,
-                                2
-                            ].map((i)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "w-1.5 h-1.5 rounded-full transition-colors duration-300",
-                                    style: {
-                                        background: i === 0 ? "#a78bfa" : "rgba(255,255,255,0.15)"
-                                    }
-                                }, i, false, {
-                                    fileName: "[project]/app/page.tsx",
-                                    lineNumber: 366,
-                                    columnNumber: 15
-                                }, this))
-                        }, void 0, false, {
-                            fileName: "[project]/app/page.tsx",
-                            lineNumber: 364,
+                            lineNumber: 350,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 313,
+                    lineNumber: 321,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/page.tsx",
-            lineNumber: 204,
+            lineNumber: 210,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/page.tsx",
-        lineNumber: 198,
+        lineNumber: 204,
         columnNumber: 5
     }, this);
 }
-_s(GamePage, "YqLd5FpG1EKoIq8JiNNNEeWRL8g=", false, function() {
+_s(GamePage, "LyljeTZ2CwixvFqm2E3Zr/2AFfU=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$dnd$2d$kit$2f$core$2f$dist$2f$core$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSensors"]

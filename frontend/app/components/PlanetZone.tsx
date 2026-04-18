@@ -7,9 +7,8 @@ import { Character } from "./CharacterCard";
 
 export interface Planet {
   id: string;
-  name: string;
+  choice: string;
   color: string; // glow / label colour e.g. "#fb923c"
-  glowColor: string; // rgba for box-shadow e.g. "rgba(249,115,22,0.4)"
   // Use imageSrc for real planet art from /Assets; falls back to CSS sphere
   imageSrc?: string;
   size: number; // diameter in px
@@ -62,64 +61,55 @@ export default function PlanetZone({
         )}
 
         {/* Planet sphere */}
-        <div
-          className="relative rounded-full overflow-hidden"
-          style={{
-            width: planet.size,
-            height: planet.size,
-            boxShadow: `0 0 ${planet.size * 0.4}px ${planet.glowColor}`,
-          }}
-        >
-          {planet.imageSrc ? (
-            // Real art asset — drop PNGs in /Assets and pass the path as imageSrc
-            <Image
-              src={planet.imageSrc}
-              alt={planet.name}
-              fill
-              className="object-cover"
-              priority
-            />
-          ) : (
-            // CSS fallback sphere until art is ready
-            <div className="w-full h-full" style={{ background: buildGradient(planet.color) }} />
-          )}
+        {planet.imageSrc ? (
+          // Real art asset — drop PNGs in /Assets and pass the path as imageSrc
+          <Image
+            src={planet.imageSrc}
+            alt={planet.choice}
+            fill
+            className="object-cover"
+            priority
+          />
+        ) : (
+          // CSS fallback sphere until art is ready
+          <div className="w-full h-full" style={{ background: buildGradient(planet.color) }} />
+        )}
 
-          {/* Characters sitting on the planet surface */}
-          {landedCharacters.length > 0 && (
-            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-0.5">
-              {landedCharacters.map((char, i) => (
-                <motion.div
-                  key={char.id}
-                  initial={{ y: 20, opacity: 0, scale: 0.5 }}
-                  animate={{ y: 0, opacity: 1, scale: 1 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 18,
-                    delay: i * 0.08,
-                  }}
-                  className="text-sm drop-shadow-md"
-                  title={char.name}
-                >
-                  {/*
-                    TODO: Replace emoji with Mii-style SVG avatar component.
-                    The avatar should be seeded from char.id so each character
-                    gets a deterministic face/colour combo.
-                  */}
-                  {char.emoji}
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Characters sitting on the planet surface */}
+        {landedCharacters.length > 0 && (
+          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-0.5">
+            {landedCharacters.map((char, i) => (
+              <motion.div
+                key={char.id}
+                initial={{ y: 20, opacity: 0, scale: 0.5 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 18,
+                  delay: i * 0.08,
+                }}
+                className="text-sm drop-shadow-md"
+                title={char.name}
+              >
+                {/*
+                  TODO: Replace emoji with Mii-style SVG avatar component.
+                  The avatar should be seeded from char.id so each character
+                  gets a deterministic face/colour combo.
+                */}
+                {char.emoji}
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Planet name label */}
+      {/* Planet choice label */}
       <span
         className="mt-1 text-[11px] font-bold uppercase tracking-wider font-['Fredoka_One']"
         style={{ color: planet.color }}
       >
-        {planet.name}
+        {planet.choice}
       </span>
     </motion.div>
   );
