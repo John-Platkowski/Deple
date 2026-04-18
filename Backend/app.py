@@ -18,31 +18,91 @@ client = MongoClient(os.getenv("MONGO_DB"))
 db = client["db"]
 aliens = db["Aliens"]
 scenarios = db["Scenarios"]
+daily_scenario = 1
 planets = db["Planets"]
+
+# alien_id : [
+#   {
+#       planet_id : planet_response,
+#       planet_id2 : planet_response2,
+#    }
+# ],
+# alien_id2 (...)
+alien_responses = {}
+
+app = Flask(__name__)
 
 # The client gets the API key from the environment variable `GEMINI_API_KEY`.
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-@app.route("/generate_response", methods=["POST"])
-# Generate is called once for each alien, where 
-def generate():
-    alien_id = request.args.get("id")
-    scenario = request.args.get("scenario")
-    
+@app.route("/response", methods=["POST"])
+def get_response():
+    if not alien_responses:
+        alien_responses = generate_alien_responses()
+    alien_id = request.args.get('id')
+    planet_id = request.args.get('planet_id')
+    return alien_responses.get(alien_id).get(planet_id)
 
-    alien = aliens.find_one({"_id": int(alien_id)})
+#get_planets() ->
+#   [
+#       {
+#           "_id": 1,
+#           "name": "Order and Control",
+#           "description": "Strict rules and monitoring..."
+#       },
+#       {
+#           "_id": 2,
+#           "name": "Care and Support",
+#           "description": "Community help..."
+#       },
+#       {
+#           "_id": 3,
+#           "name": "Work and Duty",
+#           "description": "Structured roles..."
+#       }
+#   ]
 
-    if not alien:
-        return jsonify({"error": "Alien not found"}), 404
 
-    name = alien.get("name")
-    political = alien.get("political_ideology")
-    traits = alien.get("traits")
 
-    
-    # Planet responses
-    prompt = f"""
+def get_planets():
+    result = scenarios.aggregate([
+        {
+            "$match": { "_id": 1 }
+        },
+        {
+            "$lookup": {
+                "from": "Planets",
+                "localField": "planet_options",
+                "foreignField": "_id",
+                "as": "planets"
+            }
+        }
+    ])
+    return result.get("planets")
+
+
+def generate_alien_responses():
+    global alien_responses
+
+    planet_list = get_planets()
+    scenario_doc = scenarios.find_one({"_id": daily_scenario})
+
+    planet_options_str = "\n".join(
+        f"{i+1}. {p['name']} - {p['description']}"
+        for i, p in enumerate(planet_list)
+    )
+
+    for alien in aliens.find({}):
+        if not alien:
+            continue
+
+        alien_id   = str(alien.get("_id"))
+        name       = alien.get("name")
+        political  = alien.get("political_ideology")
+        traits     = alien.get("traits")
+
+        prompt = f"""
 You are an alien decision system for an epistemology game app.
 
 A situation on a planet is given. The society at each planet will respond to the situation in different ways. 
@@ -56,12 +116,10 @@ ALIEN PROFILE:
 - Traits: {traits}
 
 SITUATION:
-{scenario}
+{scenario_doc}
 
-PLANET OPTIONS (choose only one):
-1. StrongPolicing - 
-2. SocialSupport - community help and social integration
-3. WorkPlacement - structured jobs and responsibilities
+PLANET OPTIONS:
+{planet_options_str}
 
 INSTRUCTIONS:
 - For EACH planet, give ONE short reason based on the personal attributes (max 10 words)
@@ -74,18 +132,45 @@ OUTPUT FORMAT:
 2: Reason2
 3: Reason3
 
-EXAMPLE, where 2 is the correct planet:
-1: 
-2: I value cooperation and community support
-3: 
+EXAMPLE SCENARIO:
+Profile: Catheron
+Ideology: A technocratic accelerationist who favors rapid innovation, data-driven governance, and open global markets to drive progress.
+Traits: Raised in a lower-tier sector and works in planetary sanitation services. Grounded in daily realities, they value efficiency and practical systems that keep society running.
+Situation: A neighbor Deple has fallen under the poverty line. What should the planet do?
+Planets:
+1: Tax all Deples to ensure no Deple falls behind.
+2: Let market forces determine Deple's economic path forward.
+3: Have a company hire them to ensure positive income. 
+
+EXAMPLE RESPONSE:
+1: Collective burdens slow the systems that lift everyone.
+2: Open competition rewards efficiency and drives real progress.
+3: Forcing the market's hand undoes the mechanism that make it efficient.
 """
 
-    response = client.models.generate_content(
-        model="models/gemma-3-1b-it",
-        contents=prompt
-    )
+        response = client.models.generate_content(
+            model="models/gemma-3-1b-it",
+            contents=prompt
+        )
 
-    return response.text
+        # Parse "1: Reason\n2: Reason\n3: Reason" → { planet_id: reason }
+        planet_response_dict = {}
+        for line in response.text.strip().splitlines():
+            if ":" not in line:
+                continue
+            idx_str, _, reason = line.partition(":")
+            try:
+                planet = planet_list[int(idx_str.strip()) - 1]
+                planet_response_dict[str(planet["_id"])] = reason.strip()
+            except (ValueError, IndexError):
+                continue
+
+        alien_responses[alien_id] = planet_response_dict
+
+    return alien_responses
+
+
+
 
 @app.route("/model")
 def model():
