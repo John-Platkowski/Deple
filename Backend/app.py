@@ -30,8 +30,6 @@ planets = db["Planets"]
 # alien_id2 (...)
 alien_responses = {}
 
-app = Flask(__name__)
-
 # The client gets the API key from the environment variable `GEMINI_API_KEY`.
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=GEMINI_API_KEY)
