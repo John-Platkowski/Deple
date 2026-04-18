@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4.3 (fcd0343856, 2026-01-01)"
-   sodipodi:docname="alien_face.svg"
+   sodipodi:docname="alien1_face.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.0060384"
-     inkscape:cx="364.79719"
-     inkscape:cy="593.91368"
+     inkscape:cx="364.79721"
+     inkscape:cy="593.91371"
      inkscape:window-width="1850"
      inkscape:window-height="1016"
      inkscape:window-x="70"
@@ -48,11 +48,6 @@
        d="m 124.86928,92.457736 c 3.82704,-7.492516 9.49553,-10.772831 16.53905,-14.425025 16.4118,-16.206743 12.67637,15.196271 1.24353,2.362719 -7.9213,2.992283 -12.17918,6.664288 -16.16597,13.92761 z"
        id="path4"
        sodipodi:nodetypes="ccccc" />
-    <path
-       style="fill:#9460b4;fill-opacity:1;stroke-width:0.264583"
-       d="m 114.13994,126.7637 c -21.859311,12.40272 -22.766017,41.76706 -31.296438,64.95983 24.948348,16.49223 45.925808,10.86096 66.011808,0.263 -7.3372,-23.55576 -8.92838,-49.57411 -34.71537,-65.22283 z"
-       id="path26"
-       sodipodi:nodetypes="cccc" />
   </g>
   <g
      inkscape:groupmode="layer"
