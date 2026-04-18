@@ -172,37 +172,37 @@ EXAMPLE RESPONSE:
 
 
 
-@app.route("/model")
-def model():
+# @app.route("/model")
+# def model():
 
-    models = client.models.list()
+#     models = client.models.list()
 
-    text_result = "Available models:\n\n"
+#     text_result = "Available models:\n\n"
 
-    for m in models:
-        text_result += f"- {m.name}\n"
+#     for m in models:
+#         text_result += f"- {m.name}\n"
 
-    return text_result
+#     return text_result
 
 
-#This will return all the information in a nice HTML format
-@app.route("/alienTable")
-def table():
-    aliens = aliens.find({})
+# #This will return all the information in a nice HTML format
+# @app.route("/alienTable")
+# def table():
+#     aliens = aliens.find({})
 
-    html = "<h1>Alien Ideologies</h1><ul>"
+#     html = "<h1>Alien Ideologies</h1><ul>"
 
-    for alien in aliens:
-        html += f"""
-        <li>
-            <h2>{alien.get('name')}</h2>
-            <p><strong>Political:</strong> {alien.get('political_ideology')}</p>
-            <p><strong>Moral:</strong> {alien.get('moral_ideology')}</p>
-        </li>
-        """
+#     for alien in aliens:
+#         html += f"""
+#         <li>
+#             <h2>{alien.get('name')}</h2>
+#             <p><strong>Political:</strong> {alien.get('political_ideology')}</p>
+#             <p><strong>Moral:</strong> {alien.get('moral_ideology')}</p>
+#         </li>
+#         """
 
-    html += "</ul>"
-    return html
+#     html += "</ul>"
+#     return html
 
 #This will return infromation in a json format
 @app.route("/aliens", methods = ['GET'])
@@ -220,30 +220,30 @@ def find_aliens():
 
     return jsonify(result)
 
-#What the basic root looks like
-@app.route("/")
-def root():
+# #What the basic root looks like
+# @app.route("/")
+# def root():
 
-    pages = [
-        {"name": "Alien Table (HTML)", "url": "/alienTable"},
-        {"name": "Alien Data (JSON)", "url": "/aliens"},
-        {"name": "Generate", "url": "/generate"}
-    ]
+#     pages = [
+#         {"name": "Alien Table (HTML)", "url": "/alienTable"},
+#         {"name": "Alien Data (JSON)", "url": "/aliens"},
+#         {"name": "Generate", "url": "/generate"}
+#     ]
 
-    html = "<h1>Alien API Dashboard</h1><p>Select a page:</p><ul>"
+#     html = "<h1>Alien API Dashboard</h1><p>Select a page:</p><ul>"
 
-    for page in pages:
-        html += f"""
-        <li>
-            <a href="{page['url']}">
-                <button>{page['name']}</button>
-            </a>
-        </li>
-        """
+#     for page in pages:
+#         html += f"""
+#         <li>
+#             <a href="{page['url']}">
+#                 <button>{page['name']}</button>
+#             </a>
+#         </li>
+#         """
 
-    html += "</ul>"
+#     html += "</ul>"
 
-    return html
+#     return html
 
 #access from http://127.0.0.1:5000/
 app.run(host="0.0.0.0", port=5000)
