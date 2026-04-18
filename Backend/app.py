@@ -11,8 +11,10 @@ app = Flask(__name__)
 
 #get infromation from mongoDB client
 client = MongoClient(os.getenv("MONGO_DB"))
-db = client["Aliens"]
-collection = db["Ideology"]
+db = client["db"]
+aliens = db["Aliens"]
+scenarios = db["Scenarios"]
+planets = db["Planets"]
 
 app = Flask(__name__)
 
@@ -20,50 +22,60 @@ app = Flask(__name__)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-@app.route("/generate_response", methods=["GET"])
+@app.route("/generate_response", methods=["POST"])
+# Generate is called once for each alien, where 
 def generate():
     alien_id = request.args.get("id")
-    planet_ideology = request.args.get("planet")
     scenario = request.args.get("scenario")
+    
 
-    alien = collection.find_one({"_id": int(alien_id)})
+    alien = aliens.find_one({"_id": int(alien_id)})
 
     if not alien:
         return jsonify({"error": "Alien not found"}), 404
 
     name = alien.get("name")
     political = alien.get("political_ideology")
-    moral = alien.get("moral_ideology")
+    traits = alien.get("traits")
 
+    
+    # Planet responses
     prompt = f"""
-You are an alien decision system.
+You are an alien decision system for an epistemology game app.
 
-You MUST choose exactly ONE option from the list below.
-You are not allowed to create new answers.
+A situation on a planet is given. The society at each planet will respond to the situation in different ways. 
+You are responsible for generating a given alien's response to each planet's decision. 
+This should be a hint for the user at how the alien would respond.
+You are not allowed to create new planet options, only responses.
 
 ALIEN PROFILE:
 - Name: {name}
 - Political ideology: {political}
-- Moral ideology: {moral}
+- Traits: {traits}
 
 SITUATION:
 {scenario}
 
 PLANET OPTIONS (choose only one):
-1. StrongPolicing - strict rules and enforcement of behavior
+1. StrongPolicing - 
 2. SocialSupport - community help and social integration
 3. WorkPlacement - structured jobs and responsibilities
 
 INSTRUCTIONS:
-- Choose EXACTLY ONE option number (1, 2, or 3)
-- Then give ONE short reason (max 10 words)
+- For EACH planet, give ONE short reason based on the personal attributes (max 10 words)
+- Use the political ideology in this reason, but don't explicitly include anything from it.
 - No extra text
+- If no values directly align, select the option that most closely aligns.
 
 OUTPUT FORMAT:
-OptionNumber: Reason
+1: Reason1
+2: Reason2
+3: Reason3
 
-EXAMPLE:
-2: values cooperation and community support
+EXAMPLE, where 2 is the correct planet:
+1: 
+2: I value cooperation and community support
+3: 
 """
 
     response = client.models.generate_content(
@@ -89,7 +101,7 @@ def model():
 #This will return all the information in a nice HTML format
 @app.route("/alienTable")
 def table():
-    aliens = collection.find({})
+    aliens = aliens.find({})
 
     html = "<h1>Alien Ideologies</h1><ul>"
 
@@ -106,17 +118,17 @@ def table():
     return html
 
 #This will return infromation in a json format
-@app.route("/aliens")
+@app.route("/aliens", method = ['POST'])
 def aliens():
-    aliens = collection.find({})
+    aliens = aliens.find({})
 
     result = {}
 
     for alien in aliens:
         result[str(alien["_id"])] = {
             "name": alien.get("name"),
-            "political_ideology": alien.get("political_ideology"),
-            "moral_ideology": alien.get("moral_ideology")
+            "traits": alien.get("traits"),
+            "image": alien.get("images")
         }
 
     return jsonify(result)
