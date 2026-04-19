@@ -8,6 +8,7 @@ const BACKEND = "http://localhost:5000";
 
 import CharacterCard, { Character } from "../components/CharacterCard";
 import PlanetZone, { Planet } from "../components/PlanetZone";
+import Image from "next/image";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -22,9 +23,9 @@ interface ResultRow {
 // Planet styles — assigned by index since backend doesn't have colors
 // ---------------------------------------------------------------------------
 const PLANET_STYLES = [
-  { color: "#a3e635", imageSrc: "/green_planet.svg",  size: 180 },
-  { color: "#22d3ee", imageSrc: "/ring_planet.svg",   size: 200 },
-  { color: "#fb923c", imageSrc: "/purple_planet.svg", size: 200 },
+  { color: "#a3e635", imageSrc: "/green_planet.svg",  size: 10 },
+  { color: "#22d3ee", imageSrc: "/ring_planet.svg",   size: 10 },
+  { color: "#fb923c", imageSrc: "/purple_planet.svg", size: 10 },
 ];
 
 // ---------------------------------------------------------------------------
@@ -109,10 +110,21 @@ function PlanetBadge({ planet }: { planet: Planet | null }) {
         fontFamily: "'Nunito', sans-serif",
       }}
     >
-      <span
-        className="w-2 h-2 rounded-full flex-shrink-0"
-        style={{ background: planet.color }}
-      />
+      <div
+        className="relative flex items-end justify-center"
+        style={{
+          width: planet.size + 2, // extra hit area around the planet
+          height: planet.size + 2,
+        }}
+      >
+        <Image
+          src={planet.imageSrc}
+          alt={planet.choice}
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
       {planet.choice}
     </span>
   );
@@ -134,34 +146,23 @@ function ResultCard({ row, index }: { row: ResultRow; index: number }) {
         backdropFilter: "blur(10px)",
       }}
     >
-      {/* Glow strip */}
-      <div
-        className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-2xl"
-        style={{
-          background: "linear-gradient(180deg, transparent, rgba(124,58,237,0.6), transparent)",
-        }}
-      />
-
+      
       {/* Avatar + name + correct planet */}
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-2">
         <img
           src={row.character.imageSrc2}
           alt={row.character.name}
           className="w-10 h-10 rounded-full object-contain flex-shrink-0"
-        />
-        <div className="flex flex-col gap-1">
-          <p
-            className="text-white text-sm font-bold"
-            style={{ fontFamily: "'Fredoka One', sans-serif", letterSpacing: "0.04em" }}
-          >
-            {row.character.name}
-          </p>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] uppercase tracking-widest text-gray-500">
-              Chose
-            </span>
-            <PlanetBadge planet={row.correctPlanet} />
-          </div>
+        /></div>
+      <div className="flex flex-col gap-1 mb-2">
+        <p
+          className="text-white text-sm font-bold"
+          style={{ fontFamily: "'Fredoka One', sans-serif", letterSpacing: "0.04em" }}
+        >
+          {row.character.name}
+        </p>
+        <div className="flex items-center gap-2">
+          <PlanetBadge planet={row.correctPlanet} />
         </div>
       </div>
 
@@ -241,7 +242,6 @@ export default function ResultsPage() {
             body: JSON.stringify({ alien_id: char.id, planet_id: planet.id }),
           });
           const { isCorrect } = await res.json();
-          console.log({ alien_id: char.id, planet_id: planet.id, result: isCorrect });
           if (isCorrect) return planet;
         }
         return null;
@@ -283,13 +283,13 @@ export default function ResultsPage() {
         className="relative z-10 flex flex-col items-center pt-10 pb-6 px-5"
       >
         <span
-          className="text-violet-400 text-[10px] uppercase tracking-widest mb-1"
+          className="text-violet-400 text-[20px] uppercase tracking-widest mb-1"
           style={{ fontFamily: "'Fredoka One', sans-serif" }}
         >
-          Mission Debrief
+          Deple Thoughts
         </span>
         <h1
-          className="text-white text-2xl"
+          className="text-white text-xl"
           style={{ fontFamily: "'Fredoka One', sans-serif", letterSpacing: "0.06em" }}
         >
           Results
@@ -329,7 +329,7 @@ export default function ResultsPage() {
           Play Again
         </button>
 
-        <button
+        {/* <button
           className="w-full py-3 rounded-full text-violet-300 text-sm uppercase tracking-widest"
           style={{
             background: "rgba(124,58,237,0.08)",
@@ -339,7 +339,7 @@ export default function ResultsPage() {
           onClick={() => navigator.clipboard?.writeText(window.location.href)}
         >
           Share Results
-        </button>
+        </button> */}
       </motion.footer>
 
       <style>{`

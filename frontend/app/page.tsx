@@ -351,7 +351,18 @@ useEffect(() => {
           </div>
         </section>
         {/* Centered timer pill */}
-        <div className="relative z-10 flex justify-center py-2">
+        
+        <div className="relative z-10 flex justify-center items-center gap-2 py-2">
+          <button
+            onClick={() => router.push("/planets")}
+            className="text-violet-300 text-xs uppercase tracking-widest px-4 py-1.5 rounded-full transition-colors hover:bg-violet-500/10"
+            style={{
+              fontFamily: "'Fredoka One', sans-serif",
+              border: "1px solid rgba(167,139,250,0.35)",
+            }}
+          >
+            Planets
+          </button>
           <motion.span
             animate={{ color: timeLeft <= 10 ? "#f87171" : "#7c3aed" }}
             className="text-sm px-5 py-1.5 rounded-full border"
@@ -368,6 +379,16 @@ useEffect(() => {
           >
             {formattedTime}
           </motion.span>
+          <button
+            onClick={() => router.push("/info")}
+            className="text-violet-300 text-xs uppercase tracking-widest px-4 py-1.5 rounded-full transition-colors hover:bg-violet-500/10"
+            style={{
+              fontFamily: "'Fredoka One', sans-serif",
+              border: "1px solid rgba(167,139,250,0.35)",
+            }}
+          >
+            Debles
+          </button>
         </div>
         {/* ------------------------------------------------------------------ */}
         {/* Taskbar — character selection + confirm button                      */}
@@ -413,9 +434,8 @@ useEffect(() => {
                 onClick={handleConfirm}
                 className="w-full mt-4 py-3.5 rounded-full text-white text-sm uppercase tracking-widest"
                 style={{
-                  background: "linear-gradient(135deg, #7c3aed 0%, #4338ca 100%)",
+                  background: "#4338ca",
                   fontFamily: "'Fredoka One', sans-serif",
-                  boxShadow: "0 4px 24px rgba(124,58,237,0.45)",
                 }}
               >
                 Guess

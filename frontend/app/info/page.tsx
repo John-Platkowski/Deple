@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import StarField from "../components/StarField";
 
-const BACKEND = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND = "http://localhost:5000";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -60,7 +60,7 @@ export default function AliensPage() {
       className="min-h-screen flex flex-col relative overflow-hidden"
       style={{
         background:
-          "radial-gradient(ellipse at 30% 20%, #1a1040 0%, #0a0618 60%, #000308 100%)",
+          "#000308",
         fontFamily: "'Nunito', sans-serif",
       }}
     >
@@ -74,12 +74,6 @@ export default function AliensPage() {
         >
           ← Back
         </button>
-        <h1
-          className="text-violet-300 text-lg uppercase tracking-widest"
-          style={{ fontFamily: "'Fredoka One', sans-serif" }}
-        >
-          The Crew
-        </h1>
       </header>
 
       {/* Content */}
@@ -87,93 +81,73 @@ export default function AliensPage() {
         {loading ? (
           <div className="flex justify-center items-center mt-20">
             <p
-              className="text-violet-400 text-sm uppercase tracking-widest animate-pulse"
+              className="text-violet-400 text-sm uppercase tracking-widest"
               style={{ fontFamily: "'Fredoka One', sans-serif" }}
             >
               Loading crew...
             </p>
           </div>
         ) : (
-          aliens.map((alien, i) => (
-            <motion.div
-              key={alien.id}
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1, type: "spring", stiffness: 200, damping: 20 }}
-              className="flex flex-row items-center gap-4 rounded-2xl px-4 py-4"
+        aliens.map((alien, i) => (
+          <motion.div
+            key={alien.id}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1, type: "spring", stiffness: 200, damping: 20 }}
+            className="flex flex-col items-center gap-3 rounded-2xl px-4 py-4 w-full"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(167,139,250,0.15)",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            {/* Alien image */}
+            <div
+              className="relative rounded-full overflow-hidden"
               style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(167,139,250,0.15)",
-                backdropFilter: "blur(8px)",
+                width: 80,
+                height: 80,
+                background: "rgba(167,139,250,0.1)",
+                border: "2px solid rgba(167,139,250,0.25)",
               }}
             >
-              {/* Alien image */}
-              <div
-                className="relative shrink-0 rounded-full overflow-hidden"
-                style={{
-                  width: 80,
-                  height: 80,
-                  background: "rgba(167,139,250,0.1)",
-                  border: "2px solid rgba(167,139,250,0.25)",
-                  boxShadow: "0 0 18px rgba(167,139,250,0.2)",
-                }}
+              {alien.image ? (
+                <Image src={`${alien.image}.svg`} alt={alien.name} fill className="object-contain p-1" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-4xl">🛸</div>
+              )}
+            </div>
+
+            {/* Alien info */}
+            <div className="flex flex-col gap-1.5 w-full text-center">
+              <p
+                className="text-violet-200 text-base uppercase tracking-wider"
+                style={{ fontFamily: "'Fredoka One', sans-serif" }}
               >
-                {alien.image ? (
-                  <Image
-                    src={alien.image}
-                    alt={alien.name}
-                    fill
-                    className="object-contain p-1"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-4xl">
-                    🛸
-                  </div>
-                )}
-              </div>
+                {alien.name}
+              </p>
 
-              {/* Alien info */}
-              <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                {/* Name */}
-                <p
-                  className="text-violet-200 text-base uppercase tracking-wider"
-                  style={{ fontFamily: "'Fredoka One', sans-serif" }}
-                >
-                  {alien.name}
-                </p>
+              <div className="w-full h-px" style={{ background: "rgba(167,139,250,0.15)" }} />
 
-                {/* Divider */}
-                <div
-                  className="w-full h-px"
-                  style={{ background: "rgba(167,139,250,0.15)" }}
-                />
-
-                {/* Traits */}
-                <div className="flex flex-col gap-1">
-                  <span
-                    className="text-violet-400 text-[10px] uppercase tracking-widest"
-                  >
-                    Traits
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {alien.traits.map((trait, j) => (
-                      <span
-                        key={j}
-                        className="text-[10px] px-2 py-0.5 rounded-full"
-                        style={{
-                          background: "rgba(167,139,250,0.12)",
-                          border: "1px solid rgba(167,139,250,0.25)",
-                          color: "#c4b5fd",
-                          fontWeight: 700,
-                        }}
-                      >
-                        {trait}
-                      </span>
-                    ))}
-                  </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-violet-400 text-[10px] uppercase tracking-widest">Traits</span>
+                <div className="flex flex-wrap gap-1.5 justify-center">
+                  {alien.traits.map((trait, j) => (
+                    <span
+                      key={j}
+                      className="text-[14px] px-2 py-0.5 rounded-full"
+                      style={{
+                        color: "#c4b5fd",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {trait}
+                    </span>
+                  ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
+          </motion.div>
           ))
         )}
       </section>

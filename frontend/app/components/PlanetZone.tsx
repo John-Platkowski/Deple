@@ -33,7 +33,7 @@ export default function PlanetZone({
   return (
     <motion.div
       // Gentle infinite float animation — each planet slightly offset
-      animate={{ y: [0, -10, 0] }}
+      animate={{ y: [0, -5, 0] }}
       transition={{
         duration: 4,
         repeat: Infinity,

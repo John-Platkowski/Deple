@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 import os
 from google import genai
 from flask_cors import CORS
+import re
+import threading
+import time
+
 
 
 load_dotenv()
@@ -14,33 +18,114 @@ app = Flask(__name__)
 CORS(app, origins=[os.getenv("FRONT_END")])
 
 #get infromation from mongoDB client
-client = MongoClient(os.getenv("MONGO_DB"))
-db = client["db"]
+mongo_client = MongoClient(os.getenv("MONGO_DB"))
+db = mongo_client["db"]
 aliens = db["Aliens"]
 scenarios = db["Scenarios"]
 daily_scenario = 1
 planets = db["Planets"]
 
+INTER_CALL_DELAY_SECONDS = 4  # ~15 RPM safe margin for Gemini free tier
+_hints_lock  = threading.Lock()
+_hints_ready = threading.Event()   # set once hints are fully generated
+_steelmans_lock  = threading.Lock()
+_steelmans_ready = threading.Event()
+
+PREFERRED_RE = re.compile(r'^\s*preferred\s*:\s*(\d+)\s*$', re.IGNORECASE)
+
+alien_hints = {}
+#hints:
 # alien_id : [
 #   {
-#       planet_id : planet_response,
-#       planet_id2 : planet_response2,
+#       planet_id : planet_hint,
+#       planet_id2 : planet_hint2,
 #    }
 # ],
 # alien_id2 (...)
-alien_responses = {}
+
+
+alien_steelmans = {}
+# alien_id : steelman_string
+
+
+
+alien_alignments = {}
+#alignments:
+# alien_id : preferred_planet_id
+# alien_id2 (...)
 
 # The client gets the API key from the environment variable `GEMINI_API_KEY`.
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=GEMINI_API_KEY)
+MODEL = "models/gemma-3-1b-it"
 
-@app.route("/response", methods=["POST"])
-def get_response():
-    if not alien_responses:
-        alien_responses = generate_alien_responses()
+
+
+def _ensure_hints():
+    """Block until alien_hints is populated, generating it at most once."""
+    if _hints_ready.is_set():          # fast path — already done
+        return
+    acquired = _hints_lock.acquire(blocking=True)
+    try:
+        if not _hints_ready.is_set():  # double-check under lock
+            generate_alien_hints()
+            _hints_ready.set()
+    finally:
+        _hints_lock.release()
+
+
+def _ensure_steelmans():
+    """Block until alien_steelmans is populated, generating it at most once."""
+    if _steelmans_ready.is_set():
+        return
+    acquired = _steelmans_lock.acquire(blocking=True)
+    try:
+        if not _steelmans_ready.is_set():
+            generate_alien_steelmans()
+            _steelmans_ready.set()
+    finally:
+        _steelmans_lock.release()
+
+
+
+@app.route("/hint", methods=["POST"])
+def get_hint():
+    #_ensure_hints()
+    global alien_hints
     alien_id = request.args.get('id')
     planet_id = request.args.get('planet_id')
-    return alien_responses.get(alien_id).get(planet_id)
+    hint = (alien_hints.get(alien_id) or {}).get(planet_id)
+    if hint is None:
+        return jsonify({"error": "Not found"}), 404
+    return jsonify({"hint": hint})
+
+# @app.route("/correct", methods=["POST"])
+# def get_correct():
+#     if not alien_hints:
+#         alien_hints = generate_alien_hints()
+#     alien_id = request.args.get('id')
+#     planet_id = request.args.get('planet_id')
+#     return alien_alignments.get(alien_id) == planet_id
+
+@app.route("/correct", methods=["POST"])
+def get_correct():
+    #_ensure_hints()
+    global alien_alignments
+    data = request.get_json() 
+    alien_id = data.get('alien_id')
+    planet_id = data.get('planet_id')
+    result = alien_alignments.get(alien_id) == planet_id
+    return jsonify({ "isCorrect": result })
+    
+@app.route("/steelman", methods=["GET"])
+def get_steelman():
+    global alien_steelmans
+    #_ensure_steelmans
+    alien_id = request.args.get('id')
+    steelman = alien_steelmans.get(alien_id)
+    if steelman is None:
+        return jsonify({"error": "Alien not found"}), 404
+    return jsonify({"steelman": steelman})
 
 #get_planets() ->
 #   [
@@ -62,9 +147,25 @@ def get_response():
 #   ]
 
 
+def _get_planets():
+    global scenarios
+    result = list(scenarios.aggregate([
+        { "$match": { "_id": 1 } },
+        {
+            "$lookup": {
+                "from": "Planets",
+                "localField": "planet_options",
+                "foreignField": "_id",
+                "as": "planets"
+            }
+        }
+    ]))
+    return result[0]["planets"]
 
+@app.route("/planets", methods=["GET"])
 def get_planets():
-    result = scenarios.aggregate([
+    global scenarios
+    result = list(scenarios.aggregate([
         {
             "$match": { "_id": 1 }
         },
@@ -76,14 +177,25 @@ def get_planets():
                 "as": "planets"
             }
         }
-    ])
-    return result.get("planets")
+    ]))
+    return jsonify(result[0]["planets"])
 
 
-def generate_alien_responses():
-    global alien_responses
-
-    planet_list = get_planets()
+# EXAMPLE SCENARIO:
+# Profile: Catheron
+# Ideology: A technocratic accelerationist who favors rapid innovation, data-driven governance, and open global markets.
+# Traits: Raised in a lower-tier sector, works in sanitation. Values efficiency and practical systems.
+# Situation: A neighbor Deple has fallen under the poverty line. What should the planet do?
+# Planets:
+# 1: Tax all Deples to ensure no Deple falls behind.
+# 2: Let market forces determine Deple's economic path forward.
+# 3: Have a company hire them to ensure positive income.
+def generate_alien_hints():
+    global alien_hints, alien_alignments
+    global scenarios
+    global aliens
+    global daily_scenario
+    planet_list = _get_planets()
     scenario_doc = scenarios.find_one({"_id": daily_scenario})
 
     planet_options_str = "\n".join(
@@ -91,9 +203,11 @@ def generate_alien_responses():
         for i, p in enumerate(planet_list)
     )
 
-    for alien in aliens.find({}):
+    for i, alien in enumerate(aliens.find({})):
         if not alien:
             continue
+        if i > 0:
+            time.sleep(INTER_CALL_DELAY_SECONDS)
 
         alien_id   = str(alien.get("_id"))
         name       = alien.get("name")
@@ -104,8 +218,8 @@ def generate_alien_responses():
 You are an alien decision system for an epistemology game app.
 
 A situation on a planet is given. The society at each planet will respond to the situation in different ways. 
-You are responsible for generating a given alien's response to each planet's decision. 
-This should be a hint for the user at how the alien would respond.
+You are responsible for generating a given alien's response to each planet's decision in the form of a hint.
+This should only be a hint for the user at how the alien would respond, not a steelman of their position, nor an a-priori justification.
 You are not allowed to create new planet options, only responses.
 
 ALIEN PROFILE:
@@ -120,67 +234,162 @@ PLANET OPTIONS:
 {planet_options_str}
 
 INSTRUCTIONS:
-- For EACH planet, give ONE short reason based on the personal attributes (max 10 words)
-- Use the political ideology in this reason, but don't explicitly include anything from it.
+- For EACH planet, give ONE short reaction the alien would have to that planet's approach (max 10 words)
+- Write it as the alien's gut feeling or instinct, not a reasoned argument
+- Don't explicitly reference the political ideology
 - No extra text
 - If no values directly align, select the option that most closely aligns.
 
 OUTPUT FORMAT:
-1: Reason1
-2: Reason2
-3: Reason3
+id1: Reaction1
+id2: Reaction2
+id3: Reaction3
+Preferred: PreferredPlanetID
+
+EXAMPLE RESPONSE:
+1: Dragging everyone down doesn't pull anyone up.
+2: The system works if you let it breathe.
+3: You can't patch something by breaking how it works.
+Preferred: 2
+"""
+        
+        hint = client.models.generate_content(
+            model=MODEL,
+            contents=prompt
+        )
+        # Parse "1: Reason\n2: Reason\n3: Reason" → { planet_id: reason }
+        planet_hint_dict = {}
+        for line in hint.text.strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+
+            preferred_match = PREFERRED_RE.match(line)
+            if preferred_match:
+                try:
+                    planet = planet_list[int(preferred_match.group(1)) - 1]
+                    alien_alignments[alien_id] = str(planet["_id"])
+                except (ValueError, IndexError):
+                    continue
+            elif ":" in line:
+                idx_str, _, reason = line.partition(":")
+                try:
+                    planet = planet_list[int(idx_str.strip()) - 1]
+                    planet_hint_dict[str(planet["_id"])] = reason.strip()
+                except (ValueError, IndexError):
+                    continue
+        alien_hints[alien_id] = planet_hint_dict
+        print(f"=== ALIEN: {alien_id} ===")
+        print(hint.text)
+        print(f"=== END ===")
+    return alien_hints
+
+
+
+
+
+def generate_alien_steelmans():
+    global alien_steelmans
+    global aliens
+    global scenarios
+    global daily_scenario
+    global alien_hints, alien_alignments 
+
+    if not alien_alignments:
+        generate_alien_hints()
+
+    planet_list = _get_planets()
+    planet_lookup = {str(p["_id"]): p for p in planet_list}
+    scenario_doc = scenarios.find_one({"_id": daily_scenario})
+
+    for i, alien in enumerate(aliens.find({})):
+        if not alien:
+            continue
+        if i > 0:
+            time.sleep(INTER_CALL_DELAY_SECONDS)
+
+        alien_id  = str(alien.get("_id"))
+        name      = alien.get("name")
+        political = alien.get("political_ideology")
+        traits    = alien.get("traits")
+
+        chosen_planet_id = alien_alignments.get(alien_id)
+        if not chosen_planet_id:
+            continue
+
+        chosen_planet = planet_lookup.get(chosen_planet_id)
+        if not chosen_planet:
+            continue
+
+        chosen_planet_name        = chosen_planet["name"]
+        chosen_planet_description = chosen_planet["description"]
+
+        prompt = f"""
+You are an alien decision system for an epistemology game app.
+
+A situation on a planet is given. Each alien has chosen the planet whose approach best aligns with their worldview.
+You are responsible for generating the strongest possible argument defending why a specific alien chose the planet they did.
+This should be a sincere, charitable steelman of their decision — not a gut reaction, but the best principled case for their choice.
+
+ALIEN PROFILE:
+- Name: {name}
+- Political ideology: {political}
+- Traits: {traits}
+
+SITUATION:
+{scenario_doc}
+
+CHOSEN PLANET:
+{chosen_planet_name} - {chosen_planet_description}
+
+INSTRUCTIONS:
+- Write the strongest argument this alien could make to justify choosing this planet's approach (max 30 words)
+- Frame it as a principled, reasoned case colored by the alien's worldview
+- Do not explicitly reference the alien's political ideology by name
+- Do not dismiss or undermine the chosen planet's position; steelman it sincerely
+- No extra text, just the argument
+- Make absolutely certain no additional tokens are added beyond or outside the format.
 
 EXAMPLE SCENARIO:
 Profile: Catheron
-Ideology: A technocratic accelerationist who favors rapid innovation, data-driven governance, and open global markets to drive progress.
-Traits: Raised in a lower-tier sector and works in planetary sanitation services. Grounded in daily realities, they value efficiency and practical systems that keep society running.
+Ideology: A technocratic accelerationist who favors rapid innovation, data-driven governance, and open global markets.
+Traits: Raised in a lower-tier sector, works in sanitation. Values efficiency and practical systems.
 Situation: A neighbor Deple has fallen under the poverty line. What should the planet do?
-Planets:
-1: Tax all Deples to ensure no Deple falls behind.
-2: Let market forces determine Deple's economic path forward.
-3: Have a company hire them to ensure positive income. 
+Chosen Planet: Let market forces determine Deple's economic path forward.
 
 EXAMPLE RESPONSE:
-1: Collective burdens slow the systems that lift everyone.
-2: Open competition rewards efficiency and drives real progress.
-3: Forcing the market's hand undoes the mechanism that make it efficient.
+When individuals respond to real conditions rather than imposed plans, resources tend get allocated where they're genuinely needed — even if the path looks messy from the outside.
 """
 
-        response = client.models.generate_content(
-            model="models/gemma-3-1b-it",
+        result = client.models.generate_content(
+            model=MODEL,
             contents=prompt
         )
 
-        # Parse "1: Reason\n2: Reason\n3: Reason" → { planet_id: reason }
-        planet_response_dict = {}
-        for line in response.text.strip().splitlines():
-            if ":" not in line:
-                continue
-            idx_str, _, reason = line.partition(":")
-            try:
-                planet = planet_list[int(idx_str.strip()) - 1]
-                planet_response_dict[str(planet["_id"])] = reason.strip()
-            except (ValueError, IndexError):
-                continue
+        alien_steelmans[alien_id] = result.text.strip()
 
-        alien_responses[alien_id] = planet_response_dict
-
-    return alien_responses
+    return alien_steelmans
 
 
 
 
-# @app.route("/model")
-# def model():
 
-#     models = client.models.list()
 
-#     text_result = "Available models:\n\n"
 
-#     for m in models:
-#         text_result += f"- {m.name}\n"
 
-#     return text_result
+
+
+@app.route("/model")
+def model():
+
+    models = client.models.list()
+
+    text_result = "Available models:\n\n"
+
+    for m in models:
+        text_result += f"- {m.name}\n"
+
+    return text_result
 
 
 # #This will return all the information in a nice HTML format
@@ -205,6 +414,7 @@ EXAMPLE RESPONSE:
 #This will return infromation in a json format
 @app.route("/aliens", methods = ['GET'])
 def find_aliens():
+    global aliens
     cursor = aliens.find({})
 
     result = {}
@@ -244,8 +454,18 @@ def find_aliens():
 #     return html
 
 #access from http://127.0.0.1:5000/
-app.run(host="0.0.0.0", port=5000)
+#app.run(host="0.0.0.0", port=5000)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    #_ensure_hints()
+    #_ensure_steelmans()
+    def _warm_all():
+         _ensure_hints()
+         _ensure_steelmans()
+
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":  # only the reloader child
+         threading.Thread(target=_warm_all, daemon=True).start()
+
+
+    app.run(debug=True, host="0.0.0.0", port=5000) #use_reloader=False)

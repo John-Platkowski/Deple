@@ -23,7 +23,7 @@ export default function StarField({ count = 60 }: { count?: number }) {
         y: Math.random() * 100,
         size: Math.random() < 0.15 ? 2.5 : 1.5,
         opacity: Math.random() * 0.5 + 0.2,
-        duration: Math.random() * 4 + 3,
+        duration: Math.random() * 4 + 3000000,
         delay: Math.random() * 3,
       }))
     );
