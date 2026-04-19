@@ -6,8 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 
-import CharacterCard, { Character } from "../components/CharacterCard";
-import PlanetZone, { Planet } from "../components/PlanetZone";
+import { Character } from "../components/CharacterCard";
+import { Planet } from "../components/PlanetZone";
 import Image from "next/image";
 
 // ---------------------------------------------------------------------------
