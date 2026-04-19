@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
@@ -186,7 +186,6 @@ function ResultCard({ row, index }: { row: ResultRow; index: number }) {
 // Main results page
 // ---------------------------------------------------------------------------
 export default function ResultsPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
