@@ -24,9 +24,9 @@ import StarField from "./components/StarField";
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 
 const PLANET_STYLES = [
-  { color: "#a3e635", imageSrc: "/green_planet.svg", size: 180 },
-  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: 200 },
-  { color: "#fb923c", imageSrc: "/purple_planet.svg", size: 200 },
+  { color: "#a3e635", imageSrc: "/green_planet.svg", size: 140 },
+  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: 160 },
+  { color: "#fb923c", imageSrc: "/red_planet.svg", size: 140 },
 ];
 
 const SCENARIO_PROMPT =
@@ -309,7 +309,7 @@ useEffect(() => {
             {/* Planet 1 — top-left */}
             <div
               className="absolute"
-              style={{ left: "-20%", top: "8%" }}
+              style={{ left: "5%", top: "5%" }}
               onClick={() => handlePlanetTap(planets[0].id)}
             >
               <PlanetZone
@@ -323,7 +323,7 @@ useEffect(() => {
             {/* Planet 2 — centre, slightly lower */}
             <div
               className="absolute"
-              style={{ left: "50%", top: "25%" }}
+              style={{ left: "50%", top: "35%" }}
               onClick={() => handlePlanetTap(planets[1].id)}
             >
               <PlanetZone
@@ -337,7 +337,7 @@ useEffect(() => {
             {/* Planet 3 — top-right */}
             <div
               className="absolute"
-              style={{ left: "-5%", top: "90%" }}
+              style={{ left: "0%", top: "90%" }}
               onClick={() => handlePlanetTap(planets[2].id)}
             >
               <PlanetZone

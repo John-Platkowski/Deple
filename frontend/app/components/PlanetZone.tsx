@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Character } from "./CharacterCard";
 
+
 export interface Planet {
   id: string;
   choice: string;
@@ -29,7 +30,6 @@ export default function PlanetZone({
 }: PlanetZoneProps) {
   // useDroppable marks this element as a valid drop target
   const { setNodeRef } = useDroppable({ id: planet.id });
-
   return (
     <motion.div
       // Gentle infinite float animation — each planet slightly offset
@@ -113,8 +113,14 @@ export default function PlanetZone({
 
       {/* Planet choice label */}
       <span
-        className="mt-1 text-[11px] font-bold uppercase tracking-wider font-['Fredoka_One']"
-        style={{ color: planet.color }}
+        className="absolute left-1/2 -translate-x-1/2 mt-2 text-[11px] font-bold uppercase tracking-wider font-['Fredoka_One'] whitespace-nowrap"
+        style={{
+          color: planet.color,
+          top: "100%",
+          width: planet.size*0.8,
+          transformOrigin: "center",
+          textAlign: "center",
+        }}
       >
         {planet.choice}
       </span>

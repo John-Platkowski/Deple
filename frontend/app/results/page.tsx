@@ -23,9 +23,9 @@ interface ResultRow {
 // Planet styles — assigned by index since backend doesn't have colors
 // ---------------------------------------------------------------------------
 const PLANET_STYLES = [
-  { color: "#a3e635", imageSrc: "/green_planet.svg",  size: 10 },
-  { color: "#22d3ee", imageSrc: "/ring_planet.svg",   size: 10 },
-  { color: "#fb923c", imageSrc: "/purple_planet.svg", size: 10 },
+  { color: "#a3e635", imageSrc: "/green_planet.svg", size: 50 },
+  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: 60 },
+  { color: "#fb923c", imageSrc: "/red_planet.svg", size: 50 },
 ];
 
 // ---------------------------------------------------------------------------
