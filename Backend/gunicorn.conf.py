@@ -1,4 +1,3 @@
-# gunicorn.conf.py
 import threading
 
 def post_fork(server, worker):
