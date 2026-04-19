@@ -451,6 +451,14 @@ function GamePage() {
         const data = await res.json();
         return data.isCorrect; // returns true or false
     };
+    const getHint = async (alienId, planetId)=>{
+        const res = await fetch(`${BACKEND}/hint?id=${alienId}&planet_id=${planetId}`, {
+            method: "POST"
+        });
+        if (!res.ok) return null; // 404 means no hint found
+        const data = await res.json();
+        return data.hint;
+    };
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         fetch(`${BACKEND}/aliens`).then((res)=>res.json()).then((data)=>{
             const chars = Object.entries(data).map(([id, alien])=>({
@@ -552,25 +560,30 @@ function GamePage() {
         let finished = false;
         let answers = [];
         try {
-            const results = await Promise.all(Object.entries(assignments).map(([charId, planetId])=>{
-                console.log(checkAnswer(charId, planetId));
-                answers.push([
+            const results = await Promise.all(Object.entries(assignments).map(async ([charId, planetId])=>{
+                const isCorrect = await checkAnswer(charId, planetId);
+                const hint = await getHint(charId, planetId);
+                return {
                     charId,
-                    planetId
-                ]);
-                return checkAnswer(charId, planetId);
+                    planetId,
+                    isCorrect,
+                    hint
+                };
             }));
-            const finished = results.every((r)=>r === true);
-            console.log(answers);
-            if (finished) {
+            const allCorrect = results.every((r)=>r.isCorrect);
+            if (allCorrect) {
                 router.push("/results");
+            } else {
+                const hints = {};
+                results.filter((r)=>!r.isCorrect).forEach(({ charId, hint })=>{
+                    if (hint) hints[charId] = hint;
+                });
+                setCharacterHints(hints);
             }
         } catch (err) {
             console.error("Failed to submit answers:", err);
         // TODO: show a toast/error state — don't silently fail for the user
         }
-        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-        ;
     };
     // ---------------------------------------------------------------------------
     // Derive which characters have landed on each planet
@@ -605,7 +618,7 @@ function GamePage() {
                     count: 70
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 256,
+                    lineNumber: 272,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
@@ -618,12 +631,12 @@ function GamePage() {
                         children: "The Scenario"
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 263,
+                        lineNumber: 279,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 262,
+                    lineNumber: 278,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -633,12 +646,12 @@ function GamePage() {
                         children: SCENARIO_PROMPT
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 275,
+                        lineNumber: 291,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 274,
+                    lineNumber: 290,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -661,12 +674,12 @@ function GamePage() {
                                     floatDelay: 0
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 299,
+                                    lineNumber: 315,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 294,
+                                lineNumber: 310,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -683,12 +696,12 @@ function GamePage() {
                                     floatDelay: 1.3
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 313,
+                                    lineNumber: 329,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 308,
+                                lineNumber: 324,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -705,23 +718,23 @@ function GamePage() {
                                     floatDelay: 2.1
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 327,
+                                    lineNumber: 343,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 322,
+                                lineNumber: 338,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 291,
+                        lineNumber: 307,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 283,
+                    lineNumber: 299,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -740,12 +753,12 @@ function GamePage() {
                         children: formattedTime
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 339,
+                        lineNumber: 355,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 338,
+                    lineNumber: 354,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -761,7 +774,7 @@ function GamePage() {
                             children: selectedCharId ? "Now tap a planet to assign" : "Tap or drag Alien to a destination"
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 367,
+                            lineNumber: 383,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -772,16 +785,15 @@ function GamePage() {
                                     isSelected: selectedCharId === char.id,
                                     assignedPlanetColor: dotColorFor(char.id),
                                     onTap: handleCharTap,
-                                    //hint={characterHints[char.id]}
-                                    hint: "HEllo world"
+                                    hint: characterHints[char.id]
                                 }, char.id, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 376,
+                                    lineNumber: 392,
                                     columnNumber: 15
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 374,
+                            lineNumber: 390,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AnimatePresence"], {
@@ -813,29 +825,29 @@ function GamePage() {
                                 children: "Guess"
                             }, "confirm", false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 392,
+                                lineNumber: 407,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 390,
+                            lineNumber: 405,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 359,
+                    lineNumber: 375,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/page.tsx",
-            lineNumber: 247,
+            lineNumber: 263,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/page.tsx",
-        lineNumber: 241,
+        lineNumber: 257,
         columnNumber: 5
     }, this);
 }

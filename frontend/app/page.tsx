@@ -79,6 +79,17 @@ export default function GamePage() {
     return data.isCorrect; // returns true or false
   };
 
+  const getHint = async (alienId: string, planetId: string): Promise<string | null> => {
+  const res = await fetch(
+    `${BACKEND}/hint?id=${alienId}&planet_id=${planetId}`,
+    { method: "POST" }
+  );
+    if (!res.ok) return null; // 404 means no hint found
+
+    const data = await res.json();
+    return data.hint;
+  };
+
   useEffect(() => {
     fetch(`${BACKEND}/aliens`)
       .then((res) => res.json())
@@ -192,24 +203,29 @@ useEffect(() => {
     let answers: String[][] = [];
     try {
       const results = await Promise.all(
-        Object.entries(assignments).map(([charId, planetId]) => {
-          console.log(checkAnswer(charId, planetId));
-          answers.push([charId, planetId]);
-          return checkAnswer(charId, planetId);
+        Object.entries(assignments).map(async ([charId, planetId]) => {
+          const isCorrect = await checkAnswer(charId, planetId);
+          const hint = await getHint(charId, planetId);
+          return { charId, planetId, isCorrect, hint };
         })
       );
 
-      const finished = results.every((r) => r === true);
-      console.log(answers);
-      if (finished) {
+      const allCorrect = results.every((r) => r.isCorrect);
+
+      if (allCorrect) {
         router.push("/results");
+      } else {
+        const hints: Record<string, string> = {};
+        results
+          .filter((r) => !r.isCorrect)
+          .forEach(({ charId, hint }) => {
+            if (hint) hints[charId] = hint;
+          });
+        setCharacterHints(hints);
       }
     } catch (err) {
       console.error("Failed to submit answers:", err);
       // TODO: show a toast/error state — don't silently fail for the user
-    }
-    if (finished){
-      router.push(`/results`);
     }
   };
 
@@ -380,8 +396,7 @@ useEffect(() => {
                 isSelected={selectedCharId === char.id}
                 assignedPlanetColor={dotColorFor(char.id)}
                 onTap={handleCharTap}
-                //hint={characterHints[char.id]}
-                hint={"HEllo world"}
+                hint={characterHints[char.id]}
               />
             ))}
           </div>
