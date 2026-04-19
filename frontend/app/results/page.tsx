@@ -206,6 +206,7 @@ export default function ResultsPage() {
           name: alien.name,
           imageSrc:  `${alien.image}.svg`,
           imageSrc2: `${alien.image}_face.svg`,
+          cur_planet: -1,
         }));
         setCharacters(chars);
       });
