@@ -8,12 +8,10 @@ import StarField from "../components/StarField";
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 
-const window_width = window.innerWidth;
-const window_height = window.innerHeight;
 const PLANET_STYLES = [
-  { color: "#a3e635", imageSrc: "/green_planet.svg", size: window_width*1/3 },
-  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: window_width*1/3 },
-  { color: "#fb923c", imageSrc: "/red_planet.svg", size: window_width*1/3 },
+  { color: "#a3e635", imageSrc: "/green_planet.svg", size: 140 },
+  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: 160 },
+  { color: "#fb923c", imageSrc: "/red_planet.svg", size: 140 },
 ];
 
 // ---------------------------------------------------------------------------
