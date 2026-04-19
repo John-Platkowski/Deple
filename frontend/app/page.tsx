@@ -32,7 +32,7 @@ const PLANET_STYLES = [
 const SCENARIO_PROMPT =
   "Which world would our Deples choose. How can Deples help an overly aggressive Deple?";
 
-const TIMER_SECONDS = 2000;
+const TIMER_SECONDS = 60;
 
 // ---------------------------------------------------------------------------
 // Assignment map: characterId → planetId
