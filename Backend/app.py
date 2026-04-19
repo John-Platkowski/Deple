@@ -149,8 +149,9 @@ def get_steelman():
 
 def _get_planets():
     global scenarios
+    global daily_scenario
     result = list(scenarios.aggregate([
-        { "$match": { "_id": 1 } },
+        { "$match": { "_id": daily_scenario } },
         {
             "$lookup": {
                 "from": "Planets",
@@ -165,9 +166,10 @@ def _get_planets():
 @app.route("/planets", methods=["GET"])
 def get_planets():
     global scenarios
+    global daily_scenario
     result = list(scenarios.aggregate([
         {
-            "$match": { "_id": 1 }
+            "$match": { "_id": daily_scenario }
         },
         {
             "$lookup": {
@@ -180,6 +182,10 @@ def get_planets():
     ]))
     return jsonify(result[0]["planets"])
 
+@app.route("/scenario", methods=['GET'])
+def get_scenario():
+    scenario = scenarios.find_one({"_id": 1})
+    return jsonify(scenario)
 
 # EXAMPLE SCENARIO:
 # Profile: Catheron

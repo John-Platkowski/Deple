@@ -30,8 +30,10 @@ const PLANET_STYLES = [
   { color: "#fb923c", imageSrc: "/red_planet.svg", size: 140 },
 ];
 
-const SCENARIO_PROMPT =
-  "Which world would our Deples choose. How can Deples help an overly aggressive Deple?";
+const res = await fetch(`${BACKEND}/scenario`);
+const data = await res.json();
+
+const SCENARIO_PROMPT = data["description"];
 
 const TIMER_SECONDS = 30;
 const MAX_LIVES = 3;
@@ -122,7 +124,7 @@ export default function GamePage() {
           choice:   planet.name,
           color:    PLANET_STYLES[i]?.color    ?? "#ffffff",
           imageSrc: PLANET_STYLES[i]?.imageSrc ?? "/green_planet.svg",
-          size:     PLANET_STYLES[i]?.size      ?? 200,
+          size:     Math.min(window.innerWidth * 0.25, 150),
         }));
         setPlanets(mapped);
       });
@@ -269,6 +271,8 @@ export default function GamePage() {
     }
   };
 
+  
+
   // ---------------------------------------------------------------------------
   // Derived helpers
   // ---------------------------------------------------------------------------
@@ -294,7 +298,7 @@ export default function GamePage() {
       onDragEnd={handleDragEnd}
     >
       <main
-        className="min-h-screen flex flex-col relative overflow-hidden"
+        className="min-h-screen flex flex-col relative overflow-y-auto"
         style={{ background: "#000308", fontFamily: "'Nunito', sans-serif" }}
       >
         <StarField count={70} />
@@ -302,7 +306,10 @@ export default function GamePage() {
         {/* ---------------------------------------------------------------- */}
         {/* Header                                                           */}
         {/* ---------------------------------------------------------------- */}
-        <header className="relative z-10 flex justify-center items-center px-5 pt-6 pb-2">
+        <header className="relative z-10 flex justify-center items-center px-5 pt-6 pb-2" style={{
+            background: "rgba(30,30,30,0.45)",
+            backdropFilter: "blur(14px)",
+          }}>
           <span
             className="text-violet-300 text-xs uppercase tracking-widest"
             style={{ fontFamily: "'Fredoka One', sans-serif" }}
@@ -314,37 +321,23 @@ export default function GamePage() {
         {/* ---------------------------------------------------------------- */}
         {/* Scenario prompt                                                  */}
         {/* ---------------------------------------------------------------- */}
-        <section className="relative z-10 px-6 pt-1 pb-2">
+        <section className="relative z-10 px-6 pt-1 pb-2" style={{
+            background: "rgba(30,30,30,0.45)",
+            backdropFilter: "blur(14px)",
+          }}>
           <p className="text-indigo-100 text-sm leading-relaxed font-semibold text-center">
             {SCENARIO_PROMPT}
           </p>
         </section>
 
         {/* ---------------------------------------------------------------- */}
-        {/* Planet drop zones                                                */}
-        {/* ---------------------------------------------------------------- */}
-        <section className="relative z-10 flex-1 px-4" aria-label="Planet destinations">
-          <div className="relative w-full h-full min-h-[280px]">
-
-            <div className="absolute" style={{ left: "10%", top: "5%" }} onClick={() => handlePlanetTap(planets[0].id)}>
-              <PlanetZone planet={planets[0]} landedCharacters={landedOn(planets[0].id)} isActive={activeDragOverPlanet === planets[0].id} floatDelay={0} />
-            </div>
-
-            <div className="absolute" style={{ left: "50%", top: "60%" }} onClick={() => handlePlanetTap(planets[1].id)}>
-              <PlanetZone planet={planets[1]} landedCharacters={landedOn(planets[1].id)} isActive={activeDragOverPlanet === planets[1].id} floatDelay={1.3} />
-            </div>
-
-            <div className="absolute" style={{ left: "0%", top: "90%" }} onClick={() => handlePlanetTap(planets[2].id)}>
-              <PlanetZone planet={planets[2]} landedCharacters={landedOn(planets[2].id)} isActive={activeDragOverPlanet === planets[2].id} floatDelay={2.1} />
-            </div>
-
-          </div>
-        </section>
-
-        {/* ---------------------------------------------------------------- */}
         {/* Timer bar — lives + timer + nav buttons                          */}
         {/* ---------------------------------------------------------------- */}
-        <div className="relative z-10 flex justify-center items-center gap-2 py-2">
+        <div className="relative z-20 flex justify-center items-center gap-2 py-2" style={{
+            background: "rgba(30,30,30,0.45)",
+            backdropFilter: "blur(14px)",
+            borderBottom: "1px solid rgba(255,255,255,0.10)",
+          }}>
 
           {/* Planets button */}
           <button
@@ -386,20 +379,75 @@ export default function GamePage() {
             className="text-violet-300 text-xs uppercase tracking-widest px-4 py-1.5 rounded-full transition-colors hover:bg-violet-500/10"
             style={{ fontFamily: "'Fredoka One', sans-serif", border: "1px solid rgba(167,139,250,0.35)" }}
           >
-            Debles
+            Deples
           </button>
 
         </div>
 
         {/* ---------------------------------------------------------------- */}
+        {/* Planet drop zones                                                */}
+        {/* ---------------------------------------------------------------- */}
+        {/* Planet drop zones */}
+        <section
+          className="relative z-10 flex-1 w-full"
+          aria-label="Planet destinations"
+        >
+          <div className="relative w-full h-full " style={{ height: "60vh" }}>
+
+            {/* Planet 1 — top-left */}
+            <div
+              className="absolute"
+              style={{ left: "2%", top: "10%" }}
+              onClick={() => handlePlanetTap(planets[0].id)}
+            >
+              <PlanetZone
+                planet={planets[0]}
+                landedCharacters={landedOn(planets[0].id)}
+                isActive={activeDragOverPlanet === planets[0].id}
+                floatDelay={0}
+              />
+            </div>
+
+            {/* Planet 2 — centre */}
+            <div
+              className="absolute"
+              style={{ left: "50%", transform: "translateX(-50%)", top: "50%" }}
+              onClick={() => handlePlanetTap(planets[1].id)}
+            >
+              <PlanetZone
+                planet={planets[1]}
+                landedCharacters={landedOn(planets[1].id)}
+                isActive={activeDragOverPlanet === planets[1].id}
+                floatDelay={1.3}
+              />
+            </div>
+
+            {/* Planet 3 — top-right */}
+            <div
+              className="absolute"
+              style={{ right: "2%", top: "5%" }}
+              onClick={() => handlePlanetTap(planets[2].id)}
+            >
+              <PlanetZone
+                planet={planets[2]}
+                landedCharacters={landedOn(planets[2].id)}
+                isActive={activeDragOverPlanet === planets[2].id}
+                floatDelay={2.1}
+              />
+            </div>
+
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
         {/* Taskbar                                                          */}
         {/* ---------------------------------------------------------------- */}
         <footer
-          className="relative z-10 px-4 pt-3 pb-6"
+          className="relative z-10 px-4 pt-3 pb-6 mt-auto"
           style={{
-            background: "rgba(0,0,0,0.45)",
+            background: "rgba(30,30,30,0.45)",
             backdropFilter: "blur(14px)",
-            borderTop: "1px solid rgba(255,255,255,0.07)",
+            borderTop: "1px solid rgba(255,255,255,0.10)",
           }}
         >
           <p className="text-center text-[10px] text-gray-500 uppercase tracking-widest mb-3">

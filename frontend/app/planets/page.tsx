@@ -69,6 +69,7 @@ export default function PlanetsPage() {
       <StarField count={60} />
 
       {/* Header */}
+      <div className="relative h-2"></div>
       <header className="relative z-10 flex items-center px-5 pt-8 pb-4 gap-3">
         <button
           onClick={() => router.back()}
