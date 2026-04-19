@@ -31,8 +31,8 @@ export default function PlanetZone({
   // useDroppable marks this element as a valid drop target
   const { setNodeRef } = useDroppable({ id: planet.id });
   return (
+  <div className="relative"> {/* Remove motion wrapper's flex centering */}
     <motion.div
-      // Gentle infinite float animation — each planet slightly offset
       animate={{ y: [0, -5, 0] }}
       transition={{
         duration: 4,
@@ -40,14 +40,13 @@ export default function PlanetZone({
         ease: "easeInOut",
         delay: floatDelay,
       }}
-      className="flex flex-col items-center"
     >
-      {/* Drop zone wrapper — invisible boundary, glows on active drag-over */}
+      {/* Drop zone wrapper */}
       <div
         ref={setNodeRef}
         className="relative flex items-end justify-center"
         style={{
-          width: planet.size + 32, // extra hit area around the planet
+          width: planet.size + 32,
           height: planet.size + 32,
         }}
       >
@@ -62,7 +61,6 @@ export default function PlanetZone({
 
         {/* Planet sphere */}
         {planet.imageSrc ? (
-          // Real art asset — drop PNGs in /Assets and pass the path as imageSrc
           <Image
             src={planet.imageSrc}
             alt={planet.choice}
@@ -71,7 +69,6 @@ export default function PlanetZone({
             priority
           />
         ) : (
-          // CSS fallback sphere until art is ready
           <div className="w-full h-full" style={{ background: buildGradient(planet.color) }} />
         )}
 
@@ -92,11 +89,6 @@ export default function PlanetZone({
                 className="text-sm drop-shadow-md"
                 title={char.name}
               >
-                {/*
-                  TODO: Replace emoji with Mii-style SVG avatar component.
-                  The avatar should be seeded from char.id so each character
-                  gets a deterministic face/colour combo.
-                */}
                 <Image
                   src={char.imageSrc}
                   alt={char.name}
@@ -111,21 +103,24 @@ export default function PlanetZone({
         )}
       </div>
 
-      {/* Planet choice label */}
-      <span
-        className="absolute left-1/2 -translate-x-1/2 mt-2 text-[11px] font-bold uppercase tracking-wider font-['Fredoka_One'] whitespace-nowrap"
-        style={{
-          color: planet.color,
-          top: "100%",
-          width: planet.size*0.8,
-          transformOrigin: "center",
-          textAlign: "center",
-        }}
+      {/* Planet label below */}
+      <div 
+        className="text-center mt-2"
+        style={{ width: planet.size + 32 }}
       >
-        {planet.choice}
-      </span>
+        <span
+          className="text-[11px] font-bold uppercase tracking-wider font-['Fredoka_One'] block truncate px-2 py-1 rounded-md"
+          style={{
+            color: planet.color,
+            background: `${planet.color}30`, // <-- opacity ONLY on background
+          }}
+        >
+          {planet.choice}
+        </span>
+      </div>
     </motion.div>
-  );
+  </div>
+);
 }
 
 /**

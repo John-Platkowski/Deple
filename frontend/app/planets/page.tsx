@@ -7,10 +7,9 @@ import { motion } from "framer-motion";
 import StarField from "../components/StarField";
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
-
 const PLANET_STYLES = [
   { color: "#a3e635", imageSrc: "/green_planet.svg", size: 140 },
-  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: 160 },
+  { color: "#800080", imageSrc: "/purple_planet.svg", size: 140 },
   { color: "#fb923c", imageSrc: "/red_planet.svg", size: 140 },
 ];
 
@@ -70,6 +69,7 @@ export default function PlanetsPage() {
       <StarField count={60} />
 
       {/* Header */}
+      <div className="relative h-2"></div>
       <header className="relative z-10 flex items-center px-5 pt-8 pb-4 gap-3">
         <button
           onClick={() => router.back()}

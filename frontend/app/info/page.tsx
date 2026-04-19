@@ -67,6 +67,7 @@ export default function AliensPage() {
       <StarField count={60} />
 
       {/* Header */}
+      <div className="relative h-2"></div>
       <header className="relative z-10 flex items-center px-5 pt-8 pb-4 gap-3">
         <button
           onClick={() => router.back()}
@@ -74,6 +75,12 @@ export default function AliensPage() {
         >
           ← Back
         </button>
+        <h1
+          className="text-violet-300 text-lg uppercase tracking-widest"
+          style={{ fontFamily: "'Fredoka One', sans-serif" }}
+        >
+          The Deples
+        </h1>
       </header>
 
       {/* Content */}

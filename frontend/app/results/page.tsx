@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
@@ -10,27 +10,19 @@ import { Character } from "../components/CharacterCard";
 import { Planet } from "../components/PlanetZone";
 import Image from "next/image";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 interface ResultRow {
   character: Character;
   correctPlanet: Planet | null;
   steelman: string | null;
 }
 
-// ---------------------------------------------------------------------------
-// Planet styles — assigned by index since backend doesn't have colors
-// ---------------------------------------------------------------------------
+
 const PLANET_STYLES = [
   { color: "#a3e635", imageSrc: "/green_planet.svg", size: 50 },
-  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: 60 },
+  { color: "#800080", imageSrc: "/purple_planet.svg", size: 50 },
   { color: "#fb923c", imageSrc: "/red_planet.svg", size: 50 },
 ];
 
-// ---------------------------------------------------------------------------
-// Star field
-// ---------------------------------------------------------------------------
 function StarField({ count = 60 }: { count?: number }) {
   const stars = Array.from({ length: count }, (_, i) => ({
     id: i,
@@ -68,9 +60,6 @@ function StarField({ count = 60 }: { count?: number }) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Orbit ring decoration
-// ---------------------------------------------------------------------------
 function OrbitRing({ color, size, delay = 0 }: { color: string; size: number; delay?: number }) {
   return (
     <div
@@ -89,9 +78,7 @@ function OrbitRing({ color, size, delay = 0 }: { color: string; size: number; de
   );
 }
 
-// ---------------------------------------------------------------------------
-// Planet badge
-// ---------------------------------------------------------------------------
+
 function PlanetBadge({ planet }: { planet: Planet | null }) {
   if (!planet) {
     return (
@@ -102,7 +89,7 @@ function PlanetBadge({ planet }: { planet: Planet | null }) {
   }
   return (
     <span
-      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
+      className="inline-flex justify-center items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
       style={{
         background: `${planet.color}20`,
         border: `1px solid ${planet.color}70`,
@@ -113,7 +100,7 @@ function PlanetBadge({ planet }: { planet: Planet | null }) {
       <div
         className="relative flex items-end justify-center"
         style={{
-          width: planet.size + 2, // extra hit area around the planet
+          width: planet.size + 2,
           height: planet.size + 2,
         }}
       >
@@ -130,9 +117,7 @@ function PlanetBadge({ planet }: { planet: Planet | null }) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Result card — shows character, their correct planet, and steelman
-// ---------------------------------------------------------------------------
+
 function ResultCard({ row, index }: { row: ResultRow; index: number }) {
   return (
     <motion.div
@@ -146,17 +131,16 @@ function ResultCard({ row, index }: { row: ResultRow; index: number }) {
         backdropFilter: "blur(10px)",
       }}
     >
-      
-      {/* Avatar + name + correct planet */}
-      <div className="flex items-center gap-3 mb-2">
+      <div className="flex justify-center items-center mb-2">
         <img
           src={row.character.imageSrc2}
           alt={row.character.name}
-          className="w-10 h-10 rounded-full object-contain flex-shrink-0"
-        /></div>
+          className="w-5 h-5 rounded-full object-cover"
+        />
+      </div>
       <div className="flex flex-col gap-1 mb-2">
         <p
-          className="text-white text-sm font-bold"
+          className="text-white text-center text-sm font-bold"
           style={{ fontFamily: "'Fredoka One', sans-serif", letterSpacing: "0.04em" }}
         >
           {row.character.name}
@@ -166,7 +150,6 @@ function ResultCard({ row, index }: { row: ResultRow; index: number }) {
         </div>
       </div>
 
-      {/* Steelman rationale */}
       {row.steelman && (
         <p
           className="text-indigo-200 text-xs italic leading-relaxed px-3 py-2 rounded-xl"
@@ -182,11 +165,54 @@ function ResultCard({ row, index }: { row: ResultRow; index: number }) {
   );
 }
 
+
+const OUTCOMES = {
+  win: {
+    headline: "You got it!",
+    sub: "The Deples are exactly where they belong.",
+    color: "#a3e635",
+    bg: "rgba(163,230,53,0.08)",
+    border: "rgba(163,230,53,0.3)",
+  },
+  lose: {
+    headline: "Out of lives",
+    sub: "Better luck next time?",
+    color: "#f87171",
+    bg: "rgba(248,113,113,0.08)",
+    border: "rgba(248,113,113,0.3)",
+  },
+};
+
+function OutcomeBanner({ outcome }: { outcome: "win" | "lose" }) {
+  const o = OUTCOMES[outcome];
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.92 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.15, duration: 0.45, ease: "easeOut" }}
+      className="mx-4 mb-2 rounded-2xl px-4 py-3 text-center"
+      style={{ background: o.bg, border: `1px solid ${o.border}` }}
+    >
+      <p
+        className="text-base font-bold"
+        style={{ fontFamily: "'Fredoka One', sans-serif", color: o.color, letterSpacing: "0.05em" }}
+      >
+        {o.headline}
+      </p>
+      <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
+        {o.sub}
+      </p>
+    </motion.div>
+  );
+}
+
 // ---------------------------------------------------------------------------
-// Main results page
+// Inner page — needs useSearchParams so must sit inside a Suspense boundary
 // ---------------------------------------------------------------------------
-export default function ResultsPage() {
+function ResultsInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const outcome = (searchParams.get("outcome") ?? "lose") as "win" | "lose";
 
   const [mounted, setMounted] = useState(false);
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -229,36 +255,35 @@ export default function ResultsPage() {
 
   // Build rows once everything is ready
   useEffect(() => {
-  if (!mounted || characters.length === 0 || planets.length === 0) return;
+    if (!mounted || characters.length === 0 || planets.length === 0) return;
 
-  Promise.all(
-    characters.map(async (char) => {
-      // Try every planet until we find the correct one
-      const correctPlanet = await (async () => {
-        for (const planet of planets) {
-          const res = await fetch(`${BACKEND}/correct`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ alien_id: char.id, planet_id: planet.id }),
-          });
-          const { isCorrect } = await res.json();
-          if (isCorrect) return planet;
-        }
-        return null;
-      })();
+    Promise.all(
+      characters.map(async (char) => {
+        const correctPlanet = await (async () => {
+          for (const planet of planets) {
+            const res = await fetch(`${BACKEND}/correct`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ alien_id: char.id, planet_id: planet.id }),
+            });
+            const { isCorrect } = await res.json();
+            if (isCorrect) return planet;
+          }
+          return null;
+        })();
 
-      const steelmanRes = await fetch(`${BACKEND}/steelman?id=${char.id}`);
-      const steelmanData = await steelmanRes.json();
+        const steelmanRes = await fetch(`${BACKEND}/steelman?id=${char.id}`);
+        const steelmanData = await steelmanRes.json();
 
-      return {
-        character:    char,
-        correctPlanet,
-        steelman:     steelmanData.steelman ?? null,
-      };
-    })
-  ).then(setRows);
-}, [mounted, characters, planets]);
-  
+        return {
+          character:    char,
+          correctPlanet,
+          steelman:     steelmanData.steelman ?? null,
+        };
+      })
+    ).then(setRows);
+  }, [mounted, characters, planets]);
+
   if (!mounted) return null;
   if (planets.length === 0) return null;
 
@@ -269,7 +294,6 @@ export default function ResultsPage() {
     >
       <StarField count={60} />
 
-      {/* Orbit rings */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <OrbitRing color="#7c3aed" size={500} delay={0} />
         <OrbitRing color="#22d3ee" size={340} delay={1} />
@@ -296,6 +320,11 @@ export default function ResultsPage() {
         </h1>
       </motion.header>
 
+      {/* Outcome banner */}
+      <div className="relative z-10">
+        <OutcomeBanner outcome={outcome} />
+      </div>
+
       {/* Result cards */}
       <section className="relative z-10 flex-1 px-4 pb-4 flex flex-col gap-3">
         <AnimatePresence>
@@ -321,25 +350,13 @@ export default function ResultsPage() {
           onClick={() => router.push("/")}
           className="w-full py-3.5 rounded-full text-white text-sm uppercase tracking-widest"
           style={{
-            background: "linear-gradient(135deg, #7c3aed 0%, #4338ca 100%)",
+            background: "#4338ca",
             fontFamily: "'Fredoka One', sans-serif",
             boxShadow: "0 4px 24px rgba(124,58,237,0.45)",
           }}
         >
           Play Again
         </button>
-
-        {/* <button
-          className="w-full py-3 rounded-full text-violet-300 text-sm uppercase tracking-widest"
-          style={{
-            background: "rgba(124,58,237,0.08)",
-            border: "1px solid rgba(124,58,237,0.3)",
-            fontFamily: "'Fredoka One', sans-serif",
-          }}
-          onClick={() => navigator.clipboard?.writeText(window.location.href)}
-        >
-          Share Results
-        </button> */}
       </motion.footer>
 
       <style>{`
@@ -349,5 +366,16 @@ export default function ResultsPage() {
         }
       `}</style>
     </main>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Default export — Suspense boundary required by Next.js for useSearchParams
+// ---------------------------------------------------------------------------
+export default function ResultsPage() {
+  return (
+    <Suspense>
+      <ResultsInner />
+    </Suspense>
   );
 }
