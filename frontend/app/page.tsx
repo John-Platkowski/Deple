@@ -33,7 +33,7 @@ const PLANET_STYLES = [
 const SCENARIO_PROMPT =
   "Which world would our Deples choose. How can Deples help an overly aggressive Deple?";
 
-const TIMER_SECONDS = 2000;
+const TIMER_SECONDS = 30;
 const MAX_LIVES = 3;
 
 // ---------------------------------------------------------------------------
@@ -60,130 +60,6 @@ function Heart({ filled }: { filled: boolean }) {
     </svg>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Planets modal
-// ---------------------------------------------------------------------------
-function PlanetsModal({
-  planets,
-  onClose,
-}: {
-  planets: Planet[];
-  onClose: () => void;
-}) {
-  return (
-    <div
-      className="fixed inset-0 z-50 flex flex-col"
-      style={{ background: "rgba(0,3,8,0.92)", backdropFilter: "blur(16px)" }}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 pt-10 pb-4">
-        <span
-          className="text-violet-400 text-lg uppercase tracking-widest"
-          style={{ fontFamily: "'Fredoka One', sans-serif" }}
-        >
-          Planets
-        </span>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-white transition-colors text-xl leading-none"
-          style={{ fontFamily: "'Fredoka One', sans-serif" }}
-        >
-          ✕
-        </button>
-      </div>
-
-      {/* Planet list */}
-      <div className="flex-1 overflow-y-auto px-5 pb-8 flex flex-col gap-4">
-        {planets.map((planet) => (
-          <div
-            key={planet.id}
-            className="rounded-2xl px-4 py-4 flex items-center gap-4"
-            style={{
-              background: `${planet.color}10`,
-              border: `1px solid ${planet.color}40`,
-            }}
-          >
-            <div className="relative flex-shrink-0" style={{ width: 56, height: 56 }}>
-              <Image src={planet.imageSrc ?? "/green_planet.svg"} alt={planet.choice} fill className="object-contain" />
-            </div>
-            <span
-              className="text-white text-base font-bold"
-              style={{ fontFamily: "'Fredoka One', sans-serif", color: planet.color }}
-            >
-              {planet.choice}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Debles (characters info) modal
-// ---------------------------------------------------------------------------
-function DeblesModal({
-  characters,
-  onClose,
-}: {
-  characters: Character[];
-  onClose: () => void;
-}) {
-  return (
-    <div
-      className="fixed inset-0 z-50 flex flex-col"
-      style={{ background: "rgba(0,3,8,0.92)", backdropFilter: "blur(16px)" }}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 pt-10 pb-4">
-        <span
-          className="text-violet-400 text-lg uppercase tracking-widest"
-          style={{ fontFamily: "'Fredoka One', sans-serif" }}
-        >
-          Debles
-        </span>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-white transition-colors text-xl leading-none"
-          style={{ fontFamily: "'Fredoka One', sans-serif" }}
-        >
-          ✕
-        </button>
-      </div>
-
-      {/* Character list */}
-      <div className="flex-1 overflow-y-auto px-5 pb-8 flex flex-col gap-4">
-        {characters.map((char) => (
-          <div
-            key={char.id}
-            className="rounded-2xl px-4 py-4 flex items-center gap-4"
-            style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(124,58,237,0.25)",
-            }}
-          >
-            <div className="relative flex-shrink-0 w-14 h-14">
-              <Image
-                src={char.imageSrc2}
-                alt={char.name}
-                fill
-                className="object-contain rounded-full"
-              />
-            </div>
-            <span
-              className="text-white text-base font-bold"
-              style={{ fontFamily: "'Fredoka One', sans-serif", letterSpacing: "0.04em" }}
-            >
-              {char.name}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Main game page
 // ---------------------------------------------------------------------------
@@ -208,9 +84,9 @@ export default function GamePage() {
   // Timer
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
 
-  // Modals (do NOT affect timer or lives)
-  const [showPlanets, setShowPlanets] = useState(false);
-  const [showDebles, setShowDebles] = useState(false);
+  // // Modals (do NOT affect timer or lives)
+  // const [showPlanets, setShowPlanets] = useState(false);
+  // const [showDebles, setShowDebles] = useState(false);
 
   // dnd-kit sensors
   const sensors = useSensors(
@@ -366,7 +242,7 @@ export default function GamePage() {
       const allCorrect = results.every((r) => r.isCorrect);
 
       if (allCorrect) {
-        router.push("/results");
+        router.push("/results?outcome=win");
         return;
       }
 
@@ -381,12 +257,11 @@ export default function GamePage() {
       // Still alive — show hints, reset timer, clear board
       const hints: Record<string, string> = {};
       results.filter((r) => !r.isCorrect).forEach(({ charId, hint }) => {
-        if (hint) hints[charId] = hint;
+        if (hint) {hints[charId] = hint; unassign(charId)};
       });
 
       setLives(nextLives);
       setCharacterHints(hints);
-      setAssignments({});
       setSelectedCharId(null);
       setTimeLeft(TIMER_SECONDS);
     } catch (err) {
@@ -473,7 +348,7 @@ export default function GamePage() {
 
           {/* Planets button */}
           <button
-            onClick={() => setShowPlanets(true)}
+            onClick={() => router.push("/planets")}
             className="text-violet-300 text-xs uppercase tracking-widest px-4 py-1.5 rounded-full transition-colors hover:bg-violet-500/10"
             style={{ fontFamily: "'Fredoka One', sans-serif", border: "1px solid rgba(167,139,250,0.35)" }}
           >
@@ -505,9 +380,9 @@ export default function GamePage() {
             </motion.span>
           </div>
 
-          {/* Debles button */}
+          {/* Deples button */}
           <button
-            onClick={() => setShowDebles(true)}
+            onClick={() => router.push("/info")}
             className="text-violet-300 text-xs uppercase tracking-widest px-4 py-1.5 rounded-full transition-colors hover:bg-violet-500/10"
             style={{ fontFamily: "'Fredoka One', sans-serif", border: "1px solid rgba(167,139,250,0.35)" }}
           >
@@ -563,37 +438,6 @@ export default function GamePage() {
           </AnimatePresence>
         </footer>
       </main>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Modals — rendered outside DndContext scroll area, no timer effect   */}
-      {/* ------------------------------------------------------------------ */}
-      <AnimatePresence>
-        {showPlanets && (
-          <motion.div
-            key="planets-modal"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50"
-          >
-            <PlanetsModal planets={planets} onClose={() => setShowPlanets(false)} />
-          </motion.div>
-        )}
-
-        {showDebles && (
-          <motion.div
-            key="debles-modal"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50"
-          >
-            <DeblesModal characters={characters} onClose={() => setShowDebles(false)} />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </DndContext>
   );
 }
