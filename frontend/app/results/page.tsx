@@ -148,13 +148,13 @@ function ResultCard({ row, index }: { row: ResultRow; index: number }) {
     >
       
       {/* Avatar + name + correct planet */}
-      <div className="flex items-center gap-3 text-center mb-2">
+      <div className="flex justify-center items-center mb-2">
         <img
           src={row.character.imageSrc2}
           alt={row.character.name}
-          style={{ width: 200, height: 200 }}
-          className="w-5 h-5 rounded-full object-contain flex-shrink-0"
-        /></div>
+          className="w-5 h-5 rounded-full object-cover"
+        />
+      </div>
       <div className="flex flex-col gap-1 mb-2">
         <p
           className="text-white text-center text-sm font-bold"
@@ -163,7 +163,7 @@ function ResultCard({ row, index }: { row: ResultRow; index: number }) {
           {row.character.name}
         </p>
         <div className="flex items-center gap-2">
-          <PlanetBadge classname = "items-center" planet={row.correctPlanet} />
+          <PlanetBadge planet={row.correctPlanet} />
         </div>
       </div>
 
