@@ -97,7 +97,14 @@ export default function PlanetZone({
                   The avatar should be seeded from char.id so each character
                   gets a deterministic face/colour combo.
                 */}
-                {char.imageSrc2}
+                <Image
+                  src={char.imageSrc}
+                  alt={char.name}
+                  width={40}
+                  height={40}
+                  className="object-contain p-1"
+                  priority
+                />
               </motion.div>
             ))}
           </div>

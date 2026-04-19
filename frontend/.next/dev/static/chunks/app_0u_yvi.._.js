@@ -16,7 +16,7 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-function CharacterCard({ character, isPlaced, isSelected, assignedPlanetColor, onTap }) {
+function CharacterCard({ character, isPlaced, isSelected, assignedPlanetColor, onTap, hint }) {
     _s();
     // useDraggable gives us drag handles & transform state
     const { attributes, listeners, setNodeRef, transform, isDragging } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$dnd$2d$kit$2f$core$2f$dist$2f$core$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useDraggable"])({
@@ -47,6 +47,52 @@ function CharacterCard({ character, isPlaced, isSelected, assignedPlanetColor, o
         className: "flex flex-col items-center gap-1 select-none touch-none",
         "aria-label": `${character.name} character card`,
         children: [
+            hint && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                initial: {
+                    opacity: 0,
+                    scale: 0.8,
+                    y: 4
+                },
+                animate: {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0
+                },
+                className: "relative px-2 py-1 rounded-xl text-center mb-1",
+                style: {
+                    background: "rgba(239,68,68,0.15)",
+                    border: "1px solid rgba(239,68,68,0.35)",
+                    color: "#f87171",
+                    fontSize: "9px",
+                    fontFamily: "'Nunito', sans-serif",
+                    fontWeight: 700,
+                    maxWidth: "72px"
+                },
+                children: [
+                    hint,
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        style: {
+                            position: "absolute",
+                            bottom: "-5px",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: "5px solid rgba(239,68,68,0.35)"
+                        }
+                    }, void 0, false, {
+                        fileName: "[project]/app/components/CharacterCard.tsx",
+                        lineNumber: 76,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/app/components/CharacterCard.tsx",
+                lineNumber: 60,
+                columnNumber: 7
+            }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: `
         relative w-14 h-14 rounded-full flex items-center justify-center
@@ -62,12 +108,12 @@ function CharacterCard({ character, isPlaced, isSelected, assignedPlanetColor, o
                     priority: true
                 }, void 0, false, {
                     fileName: "[project]/app/components/CharacterCard.tsx",
-                    lineNumber: 69,
+                    lineNumber: 105,
                     columnNumber: 5
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/components/CharacterCard.tsx",
-                lineNumber: 55,
+                lineNumber: 91,
                 columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -77,7 +123,7 @@ function CharacterCard({ character, isPlaced, isSelected, assignedPlanetColor, o
                 children: character.name
             }, void 0, false, {
                 fileName: "[project]/app/components/CharacterCard.tsx",
-                lineNumber: 78,
+                lineNumber: 114,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -87,13 +133,13 @@ function CharacterCard({ character, isPlaced, isSelected, assignedPlanetColor, o
                 }
             }, void 0, false, {
                 fileName: "[project]/app/components/CharacterCard.tsx",
-                lineNumber: 87,
+                lineNumber: 123,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/components/CharacterCard.tsx",
-        lineNumber: 39,
+        lineNumber: 44,
         columnNumber: 5
     }, this);
 }
@@ -215,7 +261,18 @@ function PlanetZone({ planet, landedCharacters, isActive, floatDelay = 0 }) {
                                 },
                                 className: "text-sm drop-shadow-md",
                                 title: char.name,
-                                children: char.imageSrc2
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                    src: char.imageSrc,
+                                    alt: char.name,
+                                    width: 40,
+                                    height: 40,
+                                    className: "object-contain p-1",
+                                    priority: true
+                                }, void 0, false, {
+                                    fileName: "[project]/app/components/PlanetZone.tsx",
+                                    lineNumber: 100,
+                                    columnNumber: 17
+                                }, this)
                             }, char.id, false, {
                                 fileName: "[project]/app/components/PlanetZone.tsx",
                                 lineNumber: 82,
@@ -240,7 +297,7 @@ function PlanetZone({ planet, landedCharacters, isActive, floatDelay = 0 }) {
                 children: planet.choice
             }, void 0, false, {
                 fileName: "[project]/app/components/PlanetZone.tsx",
-                lineNumber: 108,
+                lineNumber: 115,
                 columnNumber: 7
             }, this)
         ]
@@ -353,7 +410,6 @@ __turbopack_context__.s([
     "default",
     ()=>GamePage
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$dnd$2d$kit$2f$core$2f$dist$2f$core$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@dnd-kit/core/dist/core.esm.js [app-client] (ecmascript)");
@@ -377,27 +433,21 @@ var _s = __turbopack_context__.k.signature();
 // Placeholder data — replace with API fetch from Flask /api/scenarios/daily
 // ---------------------------------------------------------------------------
 const BACKEND = "http://localhost:5000";
-const PLACEHOLDER_PLANETS = [
+const PLANET_STYLES = [
     {
-        id: "proxima",
-        choice: "Proxima",
         color: "#a3e635",
-        size: 180,
-        imageSrc: "/green_planet.svg"
+        imageSrc: "/green_planet.svg",
+        size: 180
     },
     {
-        id: "kepler",
-        choice: "Kepler-22b",
         color: "#22d3ee",
-        size: 200,
-        imageSrc: "/ring_planet.svg"
+        imageSrc: "/ring_planet.svg",
+        size: 200
     },
     {
-        id: "mars",
-        choice: "Mars",
         color: "#fb923c",
-        size: 200,
-        imageSrc: "/purple_planet.svg"
+        imageSrc: "/purple_planet.svg",
+        size: 200
     }
 ];
 const SCENARIO_PROMPT = "Which world would our Deples choose. How can Deples help an overly aggressive Deple?";
@@ -413,6 +463,8 @@ function GamePage() {
     const [activeDragOverPlanet, setActiveDragOverPlanet] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     // Countdown timer
     const [timeLeft, setTimeLeft] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(TIMER_SECONDS);
+    //Character Hints
+    const [characterHints, setCharacterHints] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({});
     // Configure dnd-kit sensors for both pointer (desktop) and touch (mobile)
     const sensors = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$dnd$2d$kit$2f$core$2f$dist$2f$core$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSensors"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$dnd$2d$kit$2f$core$2f$dist$2f$core$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSensor"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$dnd$2d$kit$2f$core$2f$dist$2f$core$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PointerSensor"], {
         activationConstraint: {
@@ -426,6 +478,20 @@ function GamePage() {
     }));
     //Characters list, to be updated
     const [characters, setCharacters] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    const checkAnswer = async (alienId, planetId)=>{
+        const res = await fetch(`${BACKEND}/correct`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                alien_id: alienId,
+                planet_id: planetId
+            })
+        });
+        const data = await res.json();
+        return data.isCorrect; // returns true or false
+    };
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "GamePage.useEffect": ()=>{
             fetch(`${BACKEND}/aliens`).then({
@@ -437,10 +503,32 @@ function GamePage() {
                                 id,
                                 name: alien.name,
                                 imageSrc: `${alien.image}.svg`,
-                                imageSrc2: `${alien.image}_face.svg`
+                                imageSrc2: `${alien.image}_face.svg`,
+                                cur_planet: 0
                             })
                     }["GamePage.useEffect.chars"]);
                     setCharacters(chars);
+                }
+            }["GamePage.useEffect"]);
+        }
+    }["GamePage.useEffect"], []);
+    const [planets, setPlanets] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "GamePage.useEffect": ()=>{
+            fetch(`${BACKEND}/planets`).then({
+                "GamePage.useEffect": (res)=>res.json()
+            }["GamePage.useEffect"]).then({
+                "GamePage.useEffect": (data)=>{
+                    const mapped = data.map({
+                        "GamePage.useEffect.mapped": (planet, i)=>({
+                                id: String(planet._id),
+                                choice: planet.name,
+                                color: PLANET_STYLES[i]?.color ?? "#ffffff",
+                                imageSrc: PLANET_STYLES[i]?.imageSrc ?? "/green_planet.svg",
+                                size: PLANET_STYLES[i]?.size ?? 200
+                            })
+                    }["GamePage.useEffect.mapped"]);
+                    setPlanets(mapped);
                 }
             }["GamePage.useEffect"]);
         }
@@ -540,32 +628,35 @@ function GamePage() {
     // ---------------------------------------------------------------------------
     const allPlaced = characters.every((c)=>assignments[c.id]);
     const handleConfirm = async ()=>{
+        let finished = false;
+        let answers = [];
         try {
-            // TODO: replace with your real scenario ID from the fetched scenario
-            const scenarioId = "placeholder-scenario-id";
-            await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_API_URL}/api/answers`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    scenarioId,
-                    choices: assignments
-                })
-            });
-            // Pass assignments via query param so the results page can read them
-            router.push(`/results?scenarioId=${scenarioId}&choices=${JSON.stringify(assignments)}`);
+            const results = await Promise.all(Object.entries(assignments).map(([charId, planetId])=>{
+                console.log(checkAnswer(charId, planetId));
+                answers.push([
+                    charId,
+                    planetId
+                ]);
+                return checkAnswer(charId, planetId);
+            }));
+            const finished = results.every((r)=>r === true);
+            console.log(answers);
+            if (finished) {
+                router.push("/results");
+            }
         } catch (err) {
             console.error("Failed to submit answers:", err);
         // TODO: show a toast/error state — don't silently fail for the user
         }
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
     };
     // ---------------------------------------------------------------------------
     // Derive which characters have landed on each planet
     // ---------------------------------------------------------------------------
     const landedOn = (planetId)=>characters.filter((c)=>assignments[c.id] === planetId);
     // Planet colour for the dot indicator under each character card
-    const dotColorFor = (charId)=>PLACEHOLDER_PLANETS.find((p)=>p.id === assignments[charId])?.color;
+    const dotColorFor = (charId)=>planets.find((p)=>p.id === assignments[charId])?.color;
     //Fix client server bugs - Claude
     const [mounted, setMounted] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
@@ -573,6 +664,7 @@ function GamePage() {
             setMounted(true);
         }
     }["GamePage.useEffect"], []);
+    if (planets.length === 0) return null;
     if (!mounted) return null;
     // ---------------------------------------------------------------------------
     // Render
@@ -594,7 +686,7 @@ function GamePage() {
                     count: 70
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 231,
+                    lineNumber: 256,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
@@ -607,12 +699,12 @@ function GamePage() {
                         children: "The Scenario"
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 238,
+                        lineNumber: 263,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 237,
+                    lineNumber: 262,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -622,12 +714,12 @@ function GamePage() {
                         children: SCENARIO_PROMPT
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 250,
+                        lineNumber: 275,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 249,
+                    lineNumber: 274,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -642,20 +734,20 @@ function GamePage() {
                                     left: "-20%",
                                     top: "8%"
                                 },
-                                onClick: ()=>handlePlanetTap(PLACEHOLDER_PLANETS[0].id),
+                                onClick: ()=>handlePlanetTap(planets[0].id),
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$components$2f$PlanetZone$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                    planet: PLACEHOLDER_PLANETS[0],
-                                    landedCharacters: landedOn(PLACEHOLDER_PLANETS[0].id),
-                                    isActive: activeDragOverPlanet === PLACEHOLDER_PLANETS[0].id,
+                                    planet: planets[0],
+                                    landedCharacters: landedOn(planets[0].id),
+                                    isActive: activeDragOverPlanet === planets[0].id,
                                     floatDelay: 0
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 274,
+                                    lineNumber: 299,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 269,
+                                lineNumber: 294,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -664,20 +756,20 @@ function GamePage() {
                                     left: "50%",
                                     top: "25%"
                                 },
-                                onClick: ()=>handlePlanetTap(PLACEHOLDER_PLANETS[1].id),
+                                onClick: ()=>handlePlanetTap(planets[1].id),
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$components$2f$PlanetZone$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                    planet: PLACEHOLDER_PLANETS[1],
-                                    landedCharacters: landedOn(PLACEHOLDER_PLANETS[1].id),
-                                    isActive: activeDragOverPlanet === PLACEHOLDER_PLANETS[1].id,
+                                    planet: planets[1],
+                                    landedCharacters: landedOn(planets[1].id),
+                                    isActive: activeDragOverPlanet === planets[1].id,
                                     floatDelay: 1.3
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 288,
+                                    lineNumber: 313,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 283,
+                                lineNumber: 308,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -686,31 +778,31 @@ function GamePage() {
                                     left: "-5%",
                                     top: "90%"
                                 },
-                                onClick: ()=>handlePlanetTap(PLACEHOLDER_PLANETS[2].id),
+                                onClick: ()=>handlePlanetTap(planets[2].id),
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$components$2f$PlanetZone$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                    planet: PLACEHOLDER_PLANETS[2],
-                                    landedCharacters: landedOn(PLACEHOLDER_PLANETS[2].id),
-                                    isActive: activeDragOverPlanet === PLACEHOLDER_PLANETS[2].id,
+                                    planet: planets[2],
+                                    landedCharacters: landedOn(planets[2].id),
+                                    isActive: activeDragOverPlanet === planets[2].id,
                                     floatDelay: 2.1
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 302,
+                                    lineNumber: 327,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 297,
+                                lineNumber: 322,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 266,
+                        lineNumber: 291,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 258,
+                    lineNumber: 283,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -729,12 +821,12 @@ function GamePage() {
                         children: formattedTime
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 314,
+                        lineNumber: 339,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 313,
+                    lineNumber: 338,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -750,7 +842,7 @@ function GamePage() {
                             children: selectedCharId ? "Now tap a planet to assign" : "Tap or drag Alien to a destination"
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 342,
+                            lineNumber: 367,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -760,15 +852,17 @@ function GamePage() {
                                     isPlaced: Boolean(assignments[char.id]),
                                     isSelected: selectedCharId === char.id,
                                     assignedPlanetColor: dotColorFor(char.id),
-                                    onTap: handleCharTap
+                                    onTap: handleCharTap,
+                                    //hint={characterHints[char.id]}
+                                    hint: "HEllo world"
                                 }, char.id, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 351,
+                                    lineNumber: 376,
                                     columnNumber: 15
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 349,
+                            lineNumber: 374,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AnimatePresence"], {
@@ -797,36 +891,36 @@ function GamePage() {
                                     fontFamily: "'Fredoka One', sans-serif",
                                     boxShadow: "0 4px 24px rgba(124,58,237,0.45)"
                                 },
-                                children: "Confirm Crew"
+                                children: "Guess"
                             }, "confirm", false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 365,
+                                lineNumber: 392,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 363,
+                            lineNumber: 390,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 334,
+                    lineNumber: 359,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/page.tsx",
-            lineNumber: 222,
+            lineNumber: 247,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/page.tsx",
-        lineNumber: 216,
+        lineNumber: 241,
         columnNumber: 5
     }, this);
 }
-_s(GamePage, "p/REuQCL7cnhYD1UkvTyEqc1t+A=", false, function() {
+_s(GamePage, "n/MBj66iUmcaUXSswK3UU18jig4=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$dnd$2d$kit$2f$core$2f$dist$2f$core$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSensors"]

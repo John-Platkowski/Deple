@@ -23,28 +23,10 @@ import StarField from "./components/StarField";
 // ---------------------------------------------------------------------------
 const BACKEND = "http://localhost:5000";
 
-const PLACEHOLDER_PLANETS: Planet[] = [
-  {
-    id: "proxima",
-    choice: "Proxima",
-    color: "#a3e635",
-    size: 180,
-    imageSrc: "/green_planet.svg",
-  },
-  {
-    id: "kepler",
-    choice: "Kepler-22b",
-    color: "#22d3ee",
-    size: 200,
-    imageSrc: "/ring_planet.svg",
-  },
-  {
-    id: "mars",
-    choice: "Mars",
-    color: "#fb923c",
-    size: 200,
-    imageSrc: "/purple_planet.svg",
-  },
+const PLANET_STYLES = [
+  { color: "#a3e635", imageSrc: "/green_planet.svg", size: 180 },
+  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: 200 },
+  { color: "#fb923c", imageSrc: "/purple_planet.svg", size: 200 },
 ];
 
 const SCENARIO_PROMPT =
@@ -72,6 +54,9 @@ export default function GamePage() {
   // Countdown timer
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
 
+  //Character Hints
+  const [characterHints, setCharacterHints] = useState<Record<string, string>>({});
+
   // Configure dnd-kit sensors for both pointer (desktop) and touch (mobile)
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -80,6 +65,19 @@ export default function GamePage() {
 
   //Characters list, to be updated
   const [characters, setCharacters] = useState<Character[]>([]);
+
+  const checkAnswer = async (alienId: string, planetId: string) => {
+  const res = await fetch(`${BACKEND}/correct`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      alien_id: alienId,
+      planet_id: planetId,
+    }),
+  });
+    const data = await res.json();
+    return data.isCorrect; // returns true or false
+  };
 
   useEffect(() => {
     fetch(`${BACKEND}/aliens`)
@@ -90,10 +88,28 @@ export default function GamePage() {
           name: alien.name,
           imageSrc: `${alien.image}.svg`,
           imageSrc2: `${alien.image}_face.svg`,
+          cur_planet: 0,
         }));
         setCharacters(chars);
       });
   }, []);
+
+const [planets, setPlanets] = useState<Planet[]>([]);
+
+useEffect(() => {
+  fetch(`${BACKEND}/planets`)
+    .then((res) => res.json())
+    .then((data) => {
+      const mapped = data.map((planet: any, i: number) => ({
+        id:       String(planet._id),
+        choice:   planet.name,
+        color:    PLANET_STYLES[i]?.color    ?? "#ffffff",
+        imageSrc: PLANET_STYLES[i]?.imageSrc ?? "/green_planet.svg",
+        size:     PLANET_STYLES[i]?.size ?? 200
+      }));
+      setPlanets(mapped);
+    });
+}, []);
 
   // ---------------------------------------------------------------------------
   // Timer
@@ -116,6 +132,7 @@ export default function GamePage() {
     setAssignments((prev) => ({ ...prev, [characterId]: planetId }));
     setSelectedCharId(null);
   }, []);
+  
 
   const unassign = useCallback((characterId: string) => {
     setAssignments((prev) => {
@@ -171,21 +188,28 @@ export default function GamePage() {
   const allPlaced = characters.every((c) => assignments[c.id]);
 
   const handleConfirm = async () => {
+    let finished: boolean = false; 
+    let answers: String[][] = [];
     try {
-      // TODO: replace with your real scenario ID from the fetched scenario
-      const scenarioId = "placeholder-scenario-id";
+      const results = await Promise.all(
+        Object.entries(assignments).map(([charId, planetId]) => {
+          console.log(checkAnswer(charId, planetId));
+          answers.push([charId, planetId]);
+          return checkAnswer(charId, planetId);
+        })
+      );
 
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/answers`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scenarioId, choices: assignments }),
-      });
-
-      // Pass assignments via query param so the results page can read them
-      router.push(`/results?scenarioId=${scenarioId}&choices=${JSON.stringify(assignments)}`);
+      const finished = results.every((r) => r === true);
+      console.log(answers);
+      if (finished) {
+        router.push("/results");
+      }
     } catch (err) {
       console.error("Failed to submit answers:", err);
       // TODO: show a toast/error state — don't silently fail for the user
+    }
+    if (finished){
+      router.push(`/results`);
     }
   };
 
@@ -197,7 +221,7 @@ export default function GamePage() {
 
   // Planet colour for the dot indicator under each character card
   const dotColorFor = (charId: string): string | undefined =>
-    PLACEHOLDER_PLANETS.find((p) => p.id === assignments[charId])?.color;
+    planets.find((p) => p.id === assignments[charId])?.color;
 
   //Fix client server bugs - Claude
   const [mounted, setMounted] = useState(false);
@@ -205,6 +229,7 @@ export default function GamePage() {
   useEffect(() => {
     setMounted(true);
   }, []);
+  if (planets.length === 0) return null;
 
   if (!mounted) return null;
 
@@ -269,12 +294,12 @@ export default function GamePage() {
             <div
               className="absolute"
               style={{ left: "-20%", top: "8%" }}
-              onClick={() => handlePlanetTap(PLACEHOLDER_PLANETS[0].id)}
+              onClick={() => handlePlanetTap(planets[0].id)}
             >
               <PlanetZone
-                planet={PLACEHOLDER_PLANETS[0]}
-                landedCharacters={landedOn(PLACEHOLDER_PLANETS[0].id)}
-                isActive={activeDragOverPlanet === PLACEHOLDER_PLANETS[0].id}
+                planet={planets[0]}
+                landedCharacters={landedOn(planets[0].id)}
+                isActive={activeDragOverPlanet === planets[0].id}
                 floatDelay={0}
               />
             </div>
@@ -283,12 +308,12 @@ export default function GamePage() {
             <div
               className="absolute"
               style={{ left: "50%", top: "25%" }}
-              onClick={() => handlePlanetTap(PLACEHOLDER_PLANETS[1].id)}
+              onClick={() => handlePlanetTap(planets[1].id)}
             >
               <PlanetZone
-                planet={PLACEHOLDER_PLANETS[1]}
-                landedCharacters={landedOn(PLACEHOLDER_PLANETS[1].id)}
-                isActive={activeDragOverPlanet === PLACEHOLDER_PLANETS[1].id}
+                planet={planets[1]}
+                landedCharacters={landedOn(planets[1].id)}
+                isActive={activeDragOverPlanet === planets[1].id}
                 floatDelay={1.3}
               />
             </div>
@@ -297,12 +322,12 @@ export default function GamePage() {
             <div
               className="absolute"
               style={{ left: "-5%", top: "90%" }}
-              onClick={() => handlePlanetTap(PLACEHOLDER_PLANETS[2].id)}
+              onClick={() => handlePlanetTap(planets[2].id)}
             >
               <PlanetZone
-                planet={PLACEHOLDER_PLANETS[2]}
-                landedCharacters={landedOn(PLACEHOLDER_PLANETS[2].id)}
-                isActive={activeDragOverPlanet === PLACEHOLDER_PLANETS[2].id}
+                planet={planets[2]}
+                landedCharacters={landedOn(planets[2].id)}
+                isActive={activeDragOverPlanet === planets[2].id}
                 floatDelay={2.1}
               />
             </div>
@@ -355,6 +380,8 @@ export default function GamePage() {
                 isSelected={selectedCharId === char.id}
                 assignedPlanetColor={dotColorFor(char.id)}
                 onTap={handleCharTap}
+                //hint={characterHints[char.id]}
+                hint={"HEllo world"}
               />
             ))}
           </div>
@@ -376,7 +403,7 @@ export default function GamePage() {
                   boxShadow: "0 4px 24px rgba(124,58,237,0.45)",
                 }}
               >
-                Confirm Crew
+                Guess
               </motion.button>
             )}
           </AnimatePresence>

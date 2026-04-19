@@ -10,15 +10,19 @@ export interface Character {
   // Swap emoji for image src once art assets are ready:
   imageSrc: string;
   imageSrc2: string;
+  cur_planet: number;
 }
 
 interface CharacterCardProps {
   character: Character;
   isPlaced: boolean;
   isSelected: boolean;
-  assignedPlanetColor?: string; // dot colour matching the planet they landed on
+  assignedPlanetColor?: string;
   onTap: (id: string) => void;
+  hint?: string; 
 }
+
+
 
 export default function CharacterCard({
   character,
@@ -26,6 +30,7 @@ export default function CharacterCard({
   isSelected,
   assignedPlanetColor,
   onTap,
+  hint,
 }: CharacterCardProps) {
   // useDraggable gives us drag handles & transform state
   const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -51,6 +56,37 @@ export default function CharacterCard({
       className="flex flex-col items-center gap-1 select-none touch-none"
       aria-label={`${character.name} character card`}
     >
+    {hint && (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8, y: 4 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="relative px-2 py-1 rounded-xl text-center mb-1"
+        style={{
+          background: "rgba(239,68,68,0.15)",
+          border: "1px solid rgba(239,68,68,0.35)",
+          color: "#f87171",
+          fontSize: "9px",
+          fontFamily: "'Nunito', sans-serif",
+          fontWeight: 700,
+          maxWidth: "72px",
+        }}
+      >
+        {hint}
+        {/* Thought bubble tail */}
+        <div style={{
+          position: "absolute",
+          bottom: "-5px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 0,
+          height: 0,
+          borderLeft: "4px solid transparent",
+          borderRight: "4px solid transparent",
+          borderTop: "5px solid rgba(239,68,68,0.35)",
+        }} />
+      </motion.div>
+    )}
+
     {/* Avatar bubble */}
     <div
       className={`
