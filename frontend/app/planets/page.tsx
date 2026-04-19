@@ -7,10 +7,9 @@ import { motion } from "framer-motion";
 import StarField from "../components/StarField";
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
-
 const PLANET_STYLES = [
   { color: "#a3e635", imageSrc: "/green_planet.svg", size: 140 },
-  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: 160 },
+  { color: "#800080", imageSrc: "/purple_planet.svg", size: 140 },
   { color: "#fb923c", imageSrc: "/red_planet.svg", size: 140 },
 ];
 

@@ -24,7 +24,7 @@ interface ResultRow {
 // ---------------------------------------------------------------------------
 const PLANET_STYLES = [
   { color: "#a3e635", imageSrc: "/green_planet.svg", size: 50 },
-  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: 60 },
+  { color: "#800080", imageSrc: "/purple_planet.svg", size: 50 },
   { color: "#fb923c", imageSrc: "/red_planet.svg", size: 50 },
 ];
 
@@ -148,21 +148,22 @@ function ResultCard({ row, index }: { row: ResultRow; index: number }) {
     >
       
       {/* Avatar + name + correct planet */}
-      <div className="flex items-center gap-3 mb-2">
+      <div className="flex items-center gap-3 text-center mb-2">
         <img
           src={row.character.imageSrc2}
           alt={row.character.name}
-          className="w-10 h-10 rounded-full object-contain flex-shrink-0"
+          style={{ width: 200, height: 200 }}
+          className="w-5 h-5 rounded-full object-contain flex-shrink-0"
         /></div>
       <div className="flex flex-col gap-1 mb-2">
         <p
-          className="text-white text-sm font-bold"
+          className="text-white text-center text-sm font-bold"
           style={{ fontFamily: "'Fredoka One', sans-serif", letterSpacing: "0.04em" }}
         >
           {row.character.name}
         </p>
         <div className="flex items-center gap-2">
-          <PlanetBadge planet={row.correctPlanet} />
+          <PlanetBadge classname = "items-center" planet={row.correctPlanet} />
         </div>
       </div>
 
@@ -321,7 +322,7 @@ export default function ResultsPage() {
           onClick={() => router.push("/")}
           className="w-full py-3.5 rounded-full text-white text-sm uppercase tracking-widest"
           style={{
-            background: "linear-gradient(135deg, #7c3aed 0%, #4338ca 100%)",
+            background: "#4338ca",
             fontFamily: "'Fredoka One', sans-serif",
             boxShadow: "0 4px 24px rgba(124,58,237,0.45)",
           }}

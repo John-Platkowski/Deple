@@ -367,7 +367,9 @@ When individuals respond to real conditions rather than imposed plans, resources
         )
 
         alien_steelmans[alien_id] = result.text.strip()
-
+        print(f"=== ALIEN: {alien_id} ===")
+        print(result.text)
+        print(f"=== END ===")
     return alien_steelmans
 
 

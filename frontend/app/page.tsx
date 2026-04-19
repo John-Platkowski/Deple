@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -13,83 +13,214 @@ import {
 } from "@dnd-kit/core";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 import CharacterCard, { Character } from "./components/CharacterCard";
 import PlanetZone, { Planet } from "./components/PlanetZone";
 import StarField from "./components/StarField";
 
 // ---------------------------------------------------------------------------
-// Placeholder data — replace with API fetch from Flask /api/scenarios/daily
+// Config
 // ---------------------------------------------------------------------------
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 
 const PLANET_STYLES = [
   { color: "#a3e635", imageSrc: "/green_planet.svg", size: 140 },
-  { color: "#22d3ee", imageSrc: "/ring_planet.svg", size: 160 },
+  { color: "#800080", imageSrc: "/purple_planet.svg", size: 140 },
   { color: "#fb923c", imageSrc: "/red_planet.svg", size: 140 },
 ];
 
 const SCENARIO_PROMPT =
   "Which world would our Deples choose. How can Deples help an overly aggressive Deple?";
 
-const TIMER_SECONDS = 60;
+const TIMER_SECONDS = 2000;
+const MAX_LIVES = 3;
 
 // ---------------------------------------------------------------------------
-// Assignment map: characterId → planetId
+// Types
 // ---------------------------------------------------------------------------
 type Assignments = Record<string, string>;
 
+// ---------------------------------------------------------------------------
+// Heart icon
+// ---------------------------------------------------------------------------
+function Heart({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill={filled ? "#f87171" : "none"}
+      stroke={filled ? "#f87171" : "rgba(248,113,113,0.35)"}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Planets modal
+// ---------------------------------------------------------------------------
+function PlanetsModal({
+  planets,
+  onClose,
+}: {
+  planets: Planet[];
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex flex-col"
+      style={{ background: "rgba(0,3,8,0.92)", backdropFilter: "blur(16px)" }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-10 pb-4">
+        <span
+          className="text-violet-400 text-lg uppercase tracking-widest"
+          style={{ fontFamily: "'Fredoka One', sans-serif" }}
+        >
+          Planets
+        </span>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-white transition-colors text-xl leading-none"
+          style={{ fontFamily: "'Fredoka One', sans-serif" }}
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* Planet list */}
+      <div className="flex-1 overflow-y-auto px-5 pb-8 flex flex-col gap-4">
+        {planets.map((planet) => (
+          <div
+            key={planet.id}
+            className="rounded-2xl px-4 py-4 flex items-center gap-4"
+            style={{
+              background: `${planet.color}10`,
+              border: `1px solid ${planet.color}40`,
+            }}
+          >
+            <div className="relative flex-shrink-0" style={{ width: 56, height: 56 }}>
+              <Image src={planet.imageSrc ?? "/green_planet.svg"} alt={planet.choice} fill className="object-contain" />
+            </div>
+            <span
+              className="text-white text-base font-bold"
+              style={{ fontFamily: "'Fredoka One', sans-serif", color: planet.color }}
+            >
+              {planet.choice}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Debles (characters info) modal
+// ---------------------------------------------------------------------------
+function DeblesModal({
+  characters,
+  onClose,
+}: {
+  characters: Character[];
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex flex-col"
+      style={{ background: "rgba(0,3,8,0.92)", backdropFilter: "blur(16px)" }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-10 pb-4">
+        <span
+          className="text-violet-400 text-lg uppercase tracking-widest"
+          style={{ fontFamily: "'Fredoka One', sans-serif" }}
+        >
+          Debles
+        </span>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-white transition-colors text-xl leading-none"
+          style={{ fontFamily: "'Fredoka One', sans-serif" }}
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* Character list */}
+      <div className="flex-1 overflow-y-auto px-5 pb-8 flex flex-col gap-4">
+        {characters.map((char) => (
+          <div
+            key={char.id}
+            className="rounded-2xl px-4 py-4 flex items-center gap-4"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(124,58,237,0.25)",
+            }}
+          >
+            <div className="relative flex-shrink-0 w-14 h-14">
+              <Image
+                src={char.imageSrc2}
+                alt={char.name}
+                fill
+                className="object-contain rounded-full"
+              />
+            </div>
+            <span
+              className="text-white text-base font-bold"
+              style={{ fontFamily: "'Fredoka One', sans-serif", letterSpacing: "0.04em" }}
+            >
+              {char.name}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main game page
+// ---------------------------------------------------------------------------
 export default function GamePage() {
   const router = useRouter();
 
-  // Which character the player tapped (tap-to-select flow)
   const [selectedCharId, setSelectedCharId] = useState<string | null>(null);
-
-  // Map of characterId → planetId
   const [assignments, setAssignments] = useState<Assignments>({});
-
-  // Planet being hovered during a drag
   const [activeDragOverPlanet, setActiveDragOverPlanet] = useState<string | null>(null);
+  const [characterHints, setCharacterHints] = useState<Record<string, string>>({});
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [planets, setPlanets] = useState<Planet[]>([]);
+  const [mounted, setMounted] = useState(false);
 
-  // Countdown timer
+  // Lives
+  const [lives, setLives] = useState(MAX_LIVES);
+  // We use a ref so the timer callback always reads the latest value without
+  // needing to be in the dependency array (avoids restarting the interval).
+  const livesRef = useRef(lives);
+  useEffect(() => { livesRef.current = lives; }, [lives]);
+
+  // Timer
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
 
-  //Character Hints
-  const [characterHints, setCharacterHints] = useState<Record<string, string>>({});
+  // Modals (do NOT affect timer or lives)
+  const [showPlanets, setShowPlanets] = useState(false);
+  const [showDebles, setShowDebles] = useState(false);
 
-  // Configure dnd-kit sensors for both pointer (desktop) and touch (mobile)
+  // dnd-kit sensors
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor,   { activationConstraint: { delay: 100, tolerance: 8 } })
   );
 
-  //Characters list, to be updated
-  const [characters, setCharacters] = useState<Character[]>([]);
+  useEffect(() => { setMounted(true); }, []);
 
-  const checkAnswer = async (alienId: string, planetId: string) => {
-  const res = await fetch(`${BACKEND}/correct`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      alien_id: alienId,
-      planet_id: planetId,
-    }),
-  });
-    const data = await res.json();
-    return data.isCorrect; // returns true or false
-  };
-
-  const getHint = async (alienId: string, planetId: string): Promise<string | null> => {
-  const res = await fetch(
-    `${BACKEND}/hint?id=${alienId}&planet_id=${planetId}`,
-    { method: "POST" }
-  );
-    if (!res.ok) return null; // 404 means no hint found
-
-    const data = await res.json();
-    return data.hint;
-  };
-
+  // Fetch characters
   useEffect(() => {
     fetch(`${BACKEND}/aliens`)
       .then((res) => res.json())
@@ -97,7 +228,7 @@ export default function GamePage() {
         const chars = Object.entries(data).map(([id, alien]: [string, any]) => ({
           id,
           name: alien.name,
-          imageSrc: `${alien.image}.svg`,
+          imageSrc:  `${alien.image}.svg`,
           imageSrc2: `${alien.image}_face.svg`,
           cur_planet: 0,
         }));
@@ -105,36 +236,71 @@ export default function GamePage() {
       });
   }, []);
 
-const [planets, setPlanets] = useState<Planet[]>([]);
-
-useEffect(() => {
-  fetch(`${BACKEND}/planets`)
-    .then((res) => res.json())
-    .then((data) => {
-      const mapped = data.map((planet: any, i: number) => ({
-        id:       String(planet._id),
-        choice:   planet.name,
-        color:    PLANET_STYLES[i]?.color    ?? "#ffffff",
-        imageSrc: PLANET_STYLES[i]?.imageSrc ?? "/green_planet.svg",
-        size:     PLANET_STYLES[i]?.size ?? 200
-      }));
-      setPlanets(mapped);
-    });
-}, []);
+  // Fetch planets
+  useEffect(() => {
+    fetch(`${BACKEND}/planets`)
+      .then((res) => res.json())
+      .then((data) => {
+        const mapped = data.map((planet: any, i: number) => ({
+          id:       String(planet._id),
+          choice:   planet.name,
+          color:    PLANET_STYLES[i]?.color    ?? "#ffffff",
+          imageSrc: PLANET_STYLES[i]?.imageSrc ?? "/green_planet.svg",
+          size:     PLANET_STYLES[i]?.size      ?? 200,
+        }));
+        setPlanets(mapped);
+      });
+  }, []);
 
   // ---------------------------------------------------------------------------
-  // Timer
+  // Timer — expiry costs a life and resets the clock.
+  // Opening a modal does NOT pause the timer (per spec: don't reset, but keep
+  // counting). The timer is only reset when a life is spent.
   // ---------------------------------------------------------------------------
   useEffect(() => {
     if (timeLeft <= 0) {
-      handleConfirm(); // Auto-submit when time runs out
+      const nextLives = livesRef.current - 1;
+      if (nextLives <= 0) {
+        setLives(0);
+        router.push("/results");
+        return;
+      }
+      // Lose a life, reset timer, clear board
+      setLives(nextLives);
+      setAssignments({});
+      setCharacterHints({});
+      setSelectedCharId(null);
+      setTimeLeft(TIMER_SECONDS);
       return;
     }
+
     const id = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearTimeout(id);
-  }, [timeLeft]);
+  }, [timeLeft, router]);
 
   const formattedTime = `${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, "0")}`;
+
+  // ---------------------------------------------------------------------------
+  // API helpers
+  // ---------------------------------------------------------------------------
+  const checkAnswer = async (alienId: string, planetId: string): Promise<boolean> => {
+    const res = await fetch(`${BACKEND}/correct`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ alien_id: alienId, planet_id: planetId }),
+    });
+    const data = await res.json();
+    return data.isCorrect;
+  };
+
+  const getHint = async (alienId: string, planetId: string): Promise<string | null> => {
+    const res = await fetch(`${BACKEND}/hint?id=${alienId}&planet_id=${planetId}`, {
+      method: "POST",
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.hint;
+  };
 
   // ---------------------------------------------------------------------------
   // Assignment helpers
@@ -143,7 +309,6 @@ useEffect(() => {
     setAssignments((prev) => ({ ...prev, [characterId]: planetId }));
     setSelectedCharId(null);
   }, []);
-  
 
   const unassign = useCallback((characterId: string) => {
     setAssignments((prev) => {
@@ -154,15 +319,11 @@ useEffect(() => {
   }, []);
 
   // ---------------------------------------------------------------------------
-  // Tap-to-select flow: tap character → tap planet → assign
+  // Tap-to-select
   // ---------------------------------------------------------------------------
   const handleCharTap = useCallback(
     (charId: string) => {
-      if (assignments[charId]) {
-        // Tapping an already-placed character unassigns them
-        unassign(charId);
-        return;
-      }
+      if (assignments[charId]) { unassign(charId); return; }
       setSelectedCharId((prev) => (prev === charId ? null : charId));
     },
     [assignments, unassign]
@@ -178,34 +339,26 @@ useEffect(() => {
   // ---------------------------------------------------------------------------
   // Drag-and-drop handlers
   // ---------------------------------------------------------------------------
-  const handleDragStart = (_event: DragStartEvent) => {
-    setSelectedCharId(null); // Clear tap selection when drag starts
-  };
-
-  const handleDragOver = (event: DragOverEvent) => {
+  const handleDragStart = (_event: DragStartEvent) => setSelectedCharId(null);
+  const handleDragOver  = (event: DragOverEvent) =>
     setActiveDragOverPlanet(event.over ? String(event.over.id) : null);
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd   = (event: DragEndEvent) => {
     setActiveDragOverPlanet(null);
-    if (event.over) {
-      assign(String(event.active.id), String(event.over.id));
-    }
+    if (event.over) assign(String(event.active.id), String(event.over.id));
   };
 
   // ---------------------------------------------------------------------------
-  // Submission
+  // Submission — wrong answer costs a life + resets timer.
+  // Running out of lives sends to results. Correct answer also sends to results.
   // ---------------------------------------------------------------------------
   const allPlaced = characters.every((c) => assignments[c.id]);
 
   const handleConfirm = async () => {
-    let finished: boolean = false; 
-    let answers: String[][] = [];
     try {
       const results = await Promise.all(
         Object.entries(assignments).map(async ([charId, planetId]) => {
           const isCorrect = await checkAnswer(charId, planetId);
-          const hint = await getHint(charId, planetId);
+          const hint      = await getHint(charId, planetId);
           return { charId, planetId, isCorrect, hint };
         })
       );
@@ -214,44 +367,49 @@ useEffect(() => {
 
       if (allCorrect) {
         router.push("/results");
-      } else {
-        const hints: Record<string, string> = {};
-        results
-          .filter((r) => !r.isCorrect)
-          .forEach(({ charId, hint }) => {
-            if (hint) hints[charId] = hint;
-          });
-        setCharacterHints(hints);
+        return;
       }
+
+      // Wrong — lose a life
+      const nextLives = livesRef.current - 1;
+      if (nextLives <= 0) {
+        setLives(0);
+        router.push("/results");
+        return;
+      }
+
+      // Still alive — show hints, reset timer, clear board
+      const hints: Record<string, string> = {};
+      results.filter((r) => !r.isCorrect).forEach(({ charId, hint }) => {
+        if (hint) hints[charId] = hint;
+      });
+
+      setLives(nextLives);
+      setCharacterHints(hints);
+      setAssignments({});
+      setSelectedCharId(null);
+      setTimeLeft(TIMER_SECONDS);
     } catch (err) {
       console.error("Failed to submit answers:", err);
-      // TODO: show a toast/error state — don't silently fail for the user
     }
   };
 
   // ---------------------------------------------------------------------------
-  // Derive which characters have landed on each planet
+  // Derived helpers
   // ---------------------------------------------------------------------------
   const landedOn = (planetId: string): Character[] =>
     characters.filter((c) => assignments[c.id] === planetId);
 
-  // Planet colour for the dot indicator under each character card
   const dotColorFor = (charId: string): string | undefined =>
     planets.find((p) => p.id === assignments[charId])?.color;
 
-  //Fix client server bugs - Claude
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  if (planets.length === 0) return null;
-
-  if (!mounted) return null;
+  // ---------------------------------------------------------------------------
+  // Guards
+  // ---------------------------------------------------------------------------
+  if (!mounted || planets.length === 0) return null;
 
   // ---------------------------------------------------------------------------
   // Render
-  // radial-gradient(ellipse at 30% 20%, #1a1040 0%, #0a0618 60%, #000308 100%)
   // ---------------------------------------------------------------------------
   return (
     <DndContext
@@ -262,19 +420,13 @@ useEffect(() => {
     >
       <main
         className="min-h-screen flex flex-col relative overflow-hidden"
-        style={{
-          background:
-            "#000308",
-          fontFamily: "'Nunito', sans-serif",
-        }}
+        style={{ background: "#000308", fontFamily: "'Nunito', sans-serif" }}
       >
-        {/* Starfield background*/}
         <StarField count={70} />
-        
 
-        {/* ------------------------------------------------------------------ */}
-        {/* Header                                                              */}
-        {/* ------------------------------------------------------------------ */}
+        {/* ---------------------------------------------------------------- */}
+        {/* Header                                                           */}
+        {/* ---------------------------------------------------------------- */}
         <header className="relative z-10 flex justify-center items-center px-5 pt-6 pb-2">
           <span
             className="text-violet-300 text-xs uppercase tracking-widest"
@@ -284,115 +436,89 @@ useEffect(() => {
           </span>
         </header>
 
-        {/* ------------------------------------------------------------------ */}
-        {/* Scenario prompt                                                     */}
-        {/* ------------------------------------------------------------------ */}
+        {/* ---------------------------------------------------------------- */}
+        {/* Scenario prompt                                                  */}
+        {/* ---------------------------------------------------------------- */}
         <section className="relative z-10 px-6 pt-1 pb-2">
-          <p className="text-indigo-100 text-sm leading-relaxed font-semibold">
+          <p className="text-indigo-100 text-sm leading-relaxed font-semibold text-center">
             {SCENARIO_PROMPT}
           </p>
         </section>
 
-        {/* ------------------------------------------------------------------ */}
-        {/* Planet drop zones — floated freely in available space              */}
-        {/* ------------------------------------------------------------------ */}
-        <section
-          className="relative z-10 flex-1 px-4"
-          aria-label="Planet destinations"
-        >
-          {/* 
-            Planets are absolutely positioned to feel organic rather than grid-locked.
-            Adjust top/left values to taste once you have real planet art.
-          */}
+        {/* ---------------------------------------------------------------- */}
+        {/* Planet drop zones                                                */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="relative z-10 flex-1 px-4" aria-label="Planet destinations">
           <div className="relative w-full h-full min-h-[280px]">
 
-            {/* Planet 1 — top-left */}
-            <div
-              className="absolute"
-              style={{ left: "5%", top: "5%" }}
-              onClick={() => handlePlanetTap(planets[0].id)}
-            >
-              <PlanetZone
-                planet={planets[0]}
-                landedCharacters={landedOn(planets[0].id)}
-                isActive={activeDragOverPlanet === planets[0].id}
-                floatDelay={0}
-              />
+            <div className="absolute" style={{ left: "10%", top: "5%" }} onClick={() => handlePlanetTap(planets[0].id)}>
+              <PlanetZone planet={planets[0]} landedCharacters={landedOn(planets[0].id)} isActive={activeDragOverPlanet === planets[0].id} floatDelay={0} />
             </div>
 
-            {/* Planet 2 — centre, slightly lower */}
-            <div
-              className="absolute"
-              style={{ left: "50%", top: "35%" }}
-              onClick={() => handlePlanetTap(planets[1].id)}
-            >
-              <PlanetZone
-                planet={planets[1]}
-                landedCharacters={landedOn(planets[1].id)}
-                isActive={activeDragOverPlanet === planets[1].id}
-                floatDelay={1.3}
-              />
+            <div className="absolute" style={{ left: "50%", top: "60%" }} onClick={() => handlePlanetTap(planets[1].id)}>
+              <PlanetZone planet={planets[1]} landedCharacters={landedOn(planets[1].id)} isActive={activeDragOverPlanet === planets[1].id} floatDelay={1.3} />
             </div>
 
-            {/* Planet 3 — top-right */}
-            <div
-              className="absolute"
-              style={{ left: "0%", top: "90%" }}
-              onClick={() => handlePlanetTap(planets[2].id)}
-            >
-              <PlanetZone
-                planet={planets[2]}
-                landedCharacters={landedOn(planets[2].id)}
-                isActive={activeDragOverPlanet === planets[2].id}
-                floatDelay={2.1}
-              />
+            <div className="absolute" style={{ left: "0%", top: "90%" }} onClick={() => handlePlanetTap(planets[2].id)}>
+              <PlanetZone planet={planets[2]} landedCharacters={landedOn(planets[2].id)} isActive={activeDragOverPlanet === planets[2].id} floatDelay={2.1} />
             </div>
 
           </div>
         </section>
-        {/* Centered timer pill */}
-        
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Timer bar — lives + timer + nav buttons                          */}
+        {/* ---------------------------------------------------------------- */}
         <div className="relative z-10 flex justify-center items-center gap-2 py-2">
+
+          {/* Planets button */}
           <button
-            onClick={() => router.push("/planets")}
+            onClick={() => setShowPlanets(true)}
             className="text-violet-300 text-xs uppercase tracking-widest px-4 py-1.5 rounded-full transition-colors hover:bg-violet-500/10"
-            style={{
-              fontFamily: "'Fredoka One', sans-serif",
-              border: "1px solid rgba(167,139,250,0.35)",
-            }}
+            style={{ fontFamily: "'Fredoka One', sans-serif", border: "1px solid rgba(167,139,250,0.35)" }}
           >
             Planets
           </button>
-          <motion.span
-            animate={{ color: timeLeft <= 10 ? "#f87171" : "#7c3aed" }}
-            className="text-sm px-5 py-1.5 rounded-full border"
+
+          {/* Lives + timer pill group */}
+          <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full"
             style={{
-              background: timeLeft <= 10
-                ? "rgba(248,113,113,0.12)"
-                : "rgba(124,58,237,0.15)",
-              borderColor: timeLeft <= 10
-                ? "rgba(248,113,113,0.35)"
-                : "rgba(124,58,237,0.3)",
-              fontFamily: "'Fredoka One', sans-serif",
-              letterSpacing: "0.1em",
+              background: timeLeft <= 10 ? "rgba(248,113,113,0.12)" : "rgba(124,58,237,0.15)",
+              border: `1px solid ${timeLeft <= 10 ? "rgba(248,113,113,0.35)" : "rgba(124,58,237,0.3)"}`,
             }}
           >
-            {formattedTime}
-          </motion.span>
+            {/* Hearts */}
+            {Array.from({ length: MAX_LIVES }).map((_, i) => (
+              <Heart key={i} filled={i < lives} />
+            ))}
+
+            {/* Divider */}
+            <span style={{ color: "rgba(124,58,237,0.4)", margin: "0 2px" }}>|</span>
+
+            {/* Timer */}
+            <motion.span
+              animate={{ color: timeLeft <= 10 ? "#f87171" : "#7c3aed" }}
+              className="text-sm"
+              style={{ fontFamily: "'Fredoka One', sans-serif", letterSpacing: "0.1em" }}
+            >
+              {formattedTime}
+            </motion.span>
+          </div>
+
+          {/* Debles button */}
           <button
-            onClick={() => router.push("/info")}
+            onClick={() => setShowDebles(true)}
             className="text-violet-300 text-xs uppercase tracking-widest px-4 py-1.5 rounded-full transition-colors hover:bg-violet-500/10"
-            style={{
-              fontFamily: "'Fredoka One', sans-serif",
-              border: "1px solid rgba(167,139,250,0.35)",
-            }}
+            style={{ fontFamily: "'Fredoka One', sans-serif", border: "1px solid rgba(167,139,250,0.35)" }}
           >
             Debles
           </button>
+
         </div>
-        {/* ------------------------------------------------------------------ */}
-        {/* Taskbar — character selection + confirm button                      */}
-        {/* ------------------------------------------------------------------ */}
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Taskbar                                                          */}
+        {/* ---------------------------------------------------------------- */}
         <footer
           className="relative z-10 px-4 pt-3 pb-6"
           style={{
@@ -402,12 +528,9 @@ useEffect(() => {
           }}
         >
           <p className="text-center text-[10px] text-gray-500 uppercase tracking-widest mb-3">
-            {selectedCharId
-              ? "Now tap a planet to assign"
-              : "Tap or drag Alien to a destination"}
+            {selectedCharId ? "Now tap a planet to assign" : "Tap or drag Alien to a destination"}
           </p>
 
-          {/* Character cards */}
           <div className="flex justify-around items-end">
             {characters.map((char) => (
               <CharacterCard
@@ -422,7 +545,6 @@ useEffect(() => {
             ))}
           </div>
 
-          {/* Confirm button — animates in once all characters are placed */}
           <AnimatePresence>
             {allPlaced && (
               <motion.button
@@ -433,10 +555,7 @@ useEffect(() => {
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
                 onClick={handleConfirm}
                 className="w-full mt-4 py-3.5 rounded-full text-white text-sm uppercase tracking-widest"
-                style={{
-                  background: "#4338ca",
-                  fontFamily: "'Fredoka One', sans-serif",
-                }}
+                style={{ background: "#4338ca", fontFamily: "'Fredoka One', sans-serif" }}
               >
                 Guess
               </motion.button>
@@ -444,6 +563,37 @@ useEffect(() => {
           </AnimatePresence>
         </footer>
       </main>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Modals — rendered outside DndContext scroll area, no timer effect   */}
+      {/* ------------------------------------------------------------------ */}
+      <AnimatePresence>
+        {showPlanets && (
+          <motion.div
+            key="planets-modal"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-50"
+          >
+            <PlanetsModal planets={planets} onClose={() => setShowPlanets(false)} />
+          </motion.div>
+        )}
+
+        {showDebles && (
+          <motion.div
+            key="debles-modal"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-50"
+          >
+            <DeblesModal characters={characters} onClose={() => setShowDebles(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </DndContext>
   );
 }
