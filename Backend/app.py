@@ -457,15 +457,10 @@ def find_aliens():
 #app.run(host="0.0.0.0", port=5000)
 
 
+def _warm_all():
+    _ensure_hints()
+    _ensure_steelmans()
+
 if __name__ == "__main__":
-    #_ensure_hints()
-    #_ensure_steelmans()
-    def _warm_all():
-         _ensure_hints()
-         _ensure_steelmans()
-
-    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":  # only the reloader child
-         threading.Thread(target=_warm_all, daemon=True).start()
-
-
-    app.run(debug=True, host="0.0.0.0", port=5000) #use_reloader=False)
+    threading.Thread(target=_warm_all, daemon=True).start()
+    app.run(debug=True, host="0.0.0.0", port=5000)
