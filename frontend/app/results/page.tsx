@@ -135,7 +135,7 @@ function ResultCard({ row, index }: { row: ResultRow; index: number }) {
         <img
           src={row.character.imageSrc2}
           alt={row.character.name}
-          className="w-5 h-5 rounded-full object-cover"
+          className="w-20 h-20 rounded-full object-cover"
         />
       </div>
       <div className="flex flex-col gap-1 mb-2">

@@ -464,6 +464,13 @@ def find_aliens():
 #access from http://127.0.0.1:5000/
 #app.run(host="0.0.0.0", port=5000)
 
+# @app.route("/change_scene", methods=["GET"])
+# def change_scene():
+#     #_ensure_hints()
+#     global daily_scenario
+#     daily_scenario = 3 - daily_scenario 
+#     threading.Thread(target=_warm_all, daemon=True).start()
+#     return str(daily_scenario)
 
 def _warm_all():
     _ensure_hints()

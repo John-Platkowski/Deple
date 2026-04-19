@@ -76,6 +76,17 @@ export default function GamePage() {
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [mounted, setMounted] = useState(false);
 
+  const [scenario, setScenario] = useState("");
+
+  useEffect(() => {
+    const fetchScenario = async () => {
+      const res = await fetch(`${BACKEND}/scenario`, { cache: "no-store" });
+      const data = await res.json();
+      setScenario(data.description);
+    };
+
+    fetchScenario();
+  }, []);
   // Lives
   const [lives, setLives] = useState(MAX_LIVES);
   // We use a ref so the timer callback always reads the latest value without
@@ -376,7 +387,7 @@ export default function GamePage() {
           {/* Deples button */}
           <button
             onClick={() => router.push("/info")}
-            className="text-violet-300 text-xs uppercase tracking-widest px-4 py-1.5 rounded-full transition-colors hover:bg-violet-500/10"
+            className="text-violet-300 text-xs uppercase tracking-widest px-4 py-1.5 rounded-full transition-colors hover:bg-violet"
             style={{ fontFamily: "'Fredoka One', sans-serif", border: "1px solid rgba(167,139,250,0.35)" }}
           >
             Deples
