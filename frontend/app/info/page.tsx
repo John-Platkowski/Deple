@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import StarField from "../components/StarField";
 
-const BACKEND = "http://localhost:5000";
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 
 // ---------------------------------------------------------------------------
 // Types

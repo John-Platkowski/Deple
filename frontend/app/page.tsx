@@ -21,7 +21,7 @@ import StarField from "./components/StarField";
 // ---------------------------------------------------------------------------
 // Placeholder data — replace with API fetch from Flask /api/scenarios/daily
 // ---------------------------------------------------------------------------
-const BACKEND = "http://localhost:5000";
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 
 const PLANET_STYLES = [
   { color: "#a3e635", imageSrc: "/green_planet.svg", size: 180 },

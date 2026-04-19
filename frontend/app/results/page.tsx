@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
-const BACKEND = "http://localhost:5000";
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 
 import CharacterCard, { Character } from "../components/CharacterCard";
 import PlanetZone, { Planet } from "../components/PlanetZone";
