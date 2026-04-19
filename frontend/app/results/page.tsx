@@ -118,7 +118,7 @@ function PlanetBadge({ planet }: { planet: Planet | null }) {
         }}
       >
         <Image
-          src={planet.imageSrc}
+          src={planet.imageSrc ?? "unknown"}
           alt={planet.choice}
           fill
           className="object-cover"
