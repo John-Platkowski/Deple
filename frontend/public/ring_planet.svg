@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="206.10316mm"
+   height="137.5927mm"
+   viewBox="0 0 206.10316 137.5927"
    version="1.1"
    id="svg1"
    inkscape:version="1.4.3 (fcd0343856, 2026-01-01)"
@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="0.72248176"
-     inkscape:cx="469.216"
-     inkscape:cy="630.46574"
+     inkscape:cx="455.37482"
+     inkscape:cy="327.3439"
      inkscape:window-width="1850"
      inkscape:window-height="1016"
      inkscape:window-x="70"
@@ -37,7 +37,8 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-3.8284939,-79.691452)">
     <path
        d="M 137.25574,95.221569 A 60.242307,60.242307 0 0 1 149.25628,131.30288 60.242307,60.242307 0 0 1 89.014121,191.5454 60.242307,60.242307 0 0 1 54.847586,180.91925 60.242307,60.242307 0 0 0 103.08921,205.0801 60.242307,60.242307 0 0 0 163.33173,144.83794 60.242307,60.242307 0 0 0 137.25574,95.221569 Z"
        style="fill:#5d8986;stroke-width:0.304363"
@@ -50,7 +51,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer3"
-     inkscape:label="Layer 2">
+     inkscape:label="Layer 2"
+     transform="translate(-3.8284939,-79.691452)">
     <path
        d="m 146.14508,151.72562 a 60.242307,60.242307 0 0 0 2.36162,-9.04027 21.276655,104.28619 57.317467 0 1 -32.54169,22.44979 21.276655,104.28619 57.317467 0 1 -43.938399,24.62744 60.242307,60.242307 0 0 0 9.984921,2.07171 24.770939,121.41319 57.317467 0 0 35.117238,-20.51141 24.770939,121.41319 57.317467 0 0 29.01631,-19.59726 z"
        style="fill:#a0ab6e;stroke-width:0.355651"
