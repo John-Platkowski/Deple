@@ -75,18 +75,6 @@ export default function GamePage() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [mounted, setMounted] = useState(false);
-
-  const [scenario, setScenario] = useState("");
-
-  useEffect(() => {
-    const fetchScenario = async () => {
-      const res = await fetch(`${BACKEND}/scenario`, { cache: "no-store" });
-      const data = await res.json();
-      setScenario(data.description);
-    };
-
-    fetchScenario();
-  }, []);
   // Lives
   const [lives, setLives] = useState(MAX_LIVES);
   // We use a ref so the timer callback always reads the latest value without
