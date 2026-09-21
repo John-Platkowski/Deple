@@ -34,7 +34,7 @@ yarn-error.log*
 .env*
 
 #venv
-*/venv/
+venv*/
 notes.md
 
 # vercel
